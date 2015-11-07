@@ -20,7 +20,7 @@ app.controller("MainCtrl",function($scope,$http, $window){
 
     $scope.getUsers = function() { 
         $http.post("php/viewUsers.php").success(function(data) {
-            $scope.users = data;      
+            $scope.users = data;   
         }).error(function(data) {
             model.errorObj = data;
         })
@@ -44,6 +44,26 @@ app.controller("MainCtrl",function($scope,$http, $window){
         }).error(function(data) {
             model.errorObj = data;
         })
+    }
+
+    $scope.viewUser = function(suser) {
+        var request = {};
+        request.userId = suser.userId;
+        
+        $http.post("php/viewUser.php", request).success(function(data) {
+            $scope.viewUser = data;
+            $scope.users = null;
+        }).error(function(data) {
+            model.errorObj = data;
+        })
+    }
+
+    var toggleView = function(){
+        if (toggleView == false) {
+            toggleView = true;
+        } else {
+            toggleView = false;
+        }
     }
 
     var resetUser = function () {

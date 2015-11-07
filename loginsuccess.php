@@ -39,15 +39,15 @@
 			data-toggle="dropdown"> Admin <span class="caret"></span>
 		</a>
 			<ul class="dropdown-menu" role="menu">
-				<li><a data-target="#viewUser" data-toggle="tab" ng-click="getUsers()">Users</a>
+				<li><a data-target="#viewUser" data-toggle="tab" ng-click="getUsers()">User</a>
 					<ul class="dropdown-menu" role="menu">
 						<li><a data-target="#viewUser" data-toggle="tab" ng-click="getUsers()">View Users</a>
 						</li>
 					</ul>
 				</li>
 
-				<li><a data-target="#addUser" data-toggle="tab">Add NewUser</a></li>
-				<li><a data-target="#editUser" data-toggle="tab">Search/Edit User</a></li>
+				<li><a data-target="#addUser" data-toggle="tab">Agency</a></li>
+				<li><a data-target="#editUser" data-toggle="tab">Division</a></li>
 				
 			</ul></li>
 	</ul>
@@ -60,25 +60,39 @@
 		<ng-include src="'download.php'" ng-controller="MainCtrl"></ng-include>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="viewUser">
+		<div ng-show="users">
 			<br><label vertical-align="middle">&nbsp;Users</label>
 			<br> <label ng-hide="users">No User Added yet</label>
-			<div id="dvData">
-				<table id="testTable" class="table table-striped table-bordered" ng-show="users">
+			<div id="dvData" class="table-responsive">
+				<table id="testTable" class="table table-striped table-bordered">
 					<thead>
 						<tr>
 							<td><b>Name</td>
-							<td><b>Email</b></td>
+							<td><b>Email</td>
+							<td width="2"><b>Action</td>
 						</tr>
 					</thead>
 					<tbody
 						ng-repeat="suser in users">
 						<tr>
-							<td>{{suser.lastName}}, {{suser.firstName}}</td>
+							<td><a href="#" ng-click="viewUser(suser)">{{suser.lastName}}, {{suser.firstName}} </a></td>
 							<td>{{suser.email}}</td>
+							<td><button class="btn-group btn-group-xs btn-primary" ng-click="toggleView()">Edit</button></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
+		</div>
+
+		<div ng-hide="users">
+			<br><h2>User Details</h2>
+			<br>
+			<label> First Name : {{viewUser.firstName}} </label>
+			<br>
+			<label> Last Name : {{viewUser.lastName}} </label>
+			<br>
+			<label> Email : {{viewUser.email}} </label>
+		</div>
 	</div>	
 	<div role="tabpanel"  class="tab-pane" id="addUser">
 			<br>
