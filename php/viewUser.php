@@ -5,7 +5,7 @@ try{
             $request = json_decode($postdata);
             $userId = $request->userId;
             
-            $query = "select id as userId, firstName, lastName, email from user where id=".$userId;         
+            $query = "select id as userId, firstName, lastName, email, phone, fax, role from user where id=".$userId;         
            
             $results = executeQuery($query);
             $response = json_encode($results);

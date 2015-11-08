@@ -7,11 +7,11 @@ try {
       if (request_type == 'GET') {
             viewAgencies();
       } else if (request_type == 'POST') {
-            createAgency($request, $response);
+            createAgency();
       } else if (request_type == 'PUT') {
-            updateAgency($request, $response);
+            updateAgency();
       } else if (request_type == 'DELETE') {
-            deleteAgency($request, $response);
+            deleteAgency();
       }
 } catch (Exception $e) {
  $response = $e->getMessage();
@@ -76,7 +76,7 @@ function deleteAgency() {
             $request = json_decode($deletedata);
             $id = $request->id;
 
-            $query = sprintf("delete from agency where id=%d", $name, $description, $id);         
+            $query = sprintf("delete from agency where id=%d", $id);         
             $results = executeQuery($query);
 
                   // TODO

@@ -6,6 +6,9 @@ try{
             $email = $request->email;
             $firstName = $request->firstName;
             $lastName = $request->lastName;
+            $phone = $request->phone;
+            $role = $request->role;
+            $fax = $rquest->fax;
             $pass = $request->password;
             // A higher "cost" is more secure but consumes more processing power
             $cost = 10;
@@ -23,8 +26,10 @@ try{
             // // Hash the password with the salt
             $hash = crypt($pass, $salt);
             
-            $query = sprintf("insert into user(firstName, lastName, email, password) values ('%s','%s','%s','%s')",
-            					$firstName, $lastName, $email, $hash);         
+            $query = sprintf("insert into user(firstName, lastName, email, password, phone, role, fax, last_activity)
+                               values ('%s','%s','%s','%s','%s','%s','%s', now())",
+                              $firstName, $lastName, $email, $hash, $phone, $role, $fax);   
+                                    
             $results = executeQuery($query);
            
             
