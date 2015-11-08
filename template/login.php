@@ -5,10 +5,10 @@
 <style type="text/css">
       body{padding-top:20px;}
 </style>
-<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="css/safetrec.css" rel="stylesheet">
-<script src="js/angular.js"></script>
-<script src="js/loginapp.js"></script>
+<link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="../css/safetrec.css" rel="stylesheet">
+<script src="../js/angular.js"></script>
+<script src="../js/loginapp.js"></script>
 </head>
 <body >
 <div class="container" ng-controller="LoginCtrl"> 
@@ -19,7 +19,7 @@
     <div class="row">
 		<div class="col-md-4 col-md-offset-4">
 		<div class="wrapper">
-       <img src="img/SHSP_CultureofSafety_ver2.png" class="img-responsive" alt="Responsive image">
+       <img src="../img/SHSP_CultureofSafety_ver2.png" class="img-responsive" alt="Responsive image">
         
      </div>
     		<div class="panel panel-default">

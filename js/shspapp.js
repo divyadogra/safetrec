@@ -8,7 +8,7 @@ app.controller("MainCtrl",function($scope,$http, $window){
     $scope.userCreated = false;
 	
     $scope.listDocuments = function() {
-        var myURL = 'php/list.php';
+        var myURL = '../php/list.php';
         $http.get(myURL).success(function (results) {
         $scope.files = results.item_collection.entries;
         });
@@ -19,7 +19,7 @@ app.controller("MainCtrl",function($scope,$http, $window){
     }
 
     $scope.getUsers = function() { 
-        $http.post("php/viewUsers.php").success(function(data) {
+        $http.post("../php/viewUsers.php").success(function(data) {
             $scope.users = data;   
         }).error(function(data) {
             model.errorObj = data;
@@ -38,7 +38,7 @@ app.controller("MainCtrl",function($scope,$http, $window){
         request.password = user.password;
         request.role = user.role;
         
-        $http.post("php/createUser.php", request).success(function(data) {
+        $http.post("../php/createUser.php", request).success(function(data) {
             $scope.userCreated = true;
             resetUser();
         }).error(function(data) {
@@ -50,7 +50,7 @@ app.controller("MainCtrl",function($scope,$http, $window){
         var request = {};
         request.userId = suser.userId;
         
-        $http.post("php/viewUser.php", request).success(function(data) {
+        $http.post("../php/viewUser.php", request).success(function(data) {
             $scope.viewUser = data;
             $scope.users = null;
         }).error(function(data) {
@@ -83,7 +83,7 @@ app.controller("AgencyCtrl", function($scope, $http){
         agencyModel.agencyDescription = undefined;
         agencyModel.editMode = false;
         agencyModel.create = false;
-        $http.get("php/agency.php").success(function(data) {
+        $http.get("../php/agency.php").success(function(data) {
             agencyModel.agencies = data;   
         }).error(function(data) {
             agencyModel.errorObj = data;
@@ -104,7 +104,7 @@ app.controller("AgencyCtrl", function($scope, $http){
     }
 
     $scope.createAgency = function() {
-        $http.post("php/agency.php", {name:agencyModel.agencyName, description:agencyModel.agencyDescription}).success(function(data) {
+        $http.post("../php/agency.php", {name:agencyModel.agencyName, description:agencyModel.agencyDescription}).success(function(data) {
             init();
         }).error(function(data) {
             agencyModel.errorObj = data;
@@ -112,7 +112,7 @@ app.controller("AgencyCtrl", function($scope, $http){
     }
 
     $scope.updateAgency = function(agency) {
-       $http.put("php/agency.php", {id:agency.id, name:agency.name, description:agency.description}).success(function(data) {
+       $http.put("../php/agency.php", {id:agency.id, name:agency.name, description:agency.description}).success(function(data) {
             init();
         }).error(function(data) {
             agencyModel.errorObj = data;
@@ -120,7 +120,7 @@ app.controller("AgencyCtrl", function($scope, $http){
     }
 
     $scope.deleteAgency = function(agency) {
-        $http.delete("php/agency.php", {params: {id:agency.id}}).success(function(data) {
+        $http.delete("../php/agency.php", {params: {id:agency.id}}).success(function(data) {
            init(); 
         }).error(function(data) {
             agencyModel.errorObj = data;
