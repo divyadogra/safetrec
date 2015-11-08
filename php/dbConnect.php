@@ -4,7 +4,7 @@ function executeQuery($query) {
     $servername = "localhost";
     $username = "divya";
     $password = "password";
-    $dbname = "practicedb";
+    $dbname = "safetrec";
     try {
         
         $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -22,9 +22,9 @@ function executeQuery($query) {
              array_push($rows, $row);
         } 
 
-        if (count($rows) == 1) {
-            return $rows[0];
-        } 
+        // if (count($rows) == 1) {
+        //     return $rows[0];
+        // } 
         return $rows;
         
     } catch(PDOException $e) {

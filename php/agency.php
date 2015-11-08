@@ -2,9 +2,10 @@
 include "dbConnect.php";
 
 try {
-
-      var request_type = $_SERVER['REQUEST_METHOD'];
-      if (request_type == 'GET') {
+      
+      $request_type = $_SERVER['REQUEST_METHOD'];
+    
+      if ($request_type == 'GET') {
             viewAgencies();
       } else if (request_type == 'POST') {
             createAgency();
@@ -12,6 +13,7 @@ try {
             updateAgency();
       } else if (request_type == 'DELETE') {
             deleteAgency();
+
       }
 } catch (Exception $e) {
  $response = $e->getMessage();
@@ -22,14 +24,12 @@ function viewAgencies() {
 
             $query = "select id, name, description from agency";         
             $results = executeQuery($query);
-
             $response = json_encode($results);
             echo $response;
             
       } catch (Exception $e) {
        $response = $e->getMessage();
  }
-
 }
 
 function createAgency() {
@@ -72,9 +72,8 @@ function updateAgency() {
 
 function deleteAgency() {
       try{
-            $deletedata = file_get_contents("php://input");
-            $request = json_decode($deletedata);
-            $id = $request->id;
+            
+            $id = $_GET['id'];;
 
             $query = sprintf("delete from agency where id=%d", $id);         
             $results = executeQuery($query);
@@ -82,7 +81,7 @@ function deleteAgency() {
                   // TODO
                   // check the results for success/ failure?
 
-      } catch (Exception $e) {
+     } catch (Exception $e) {
            $response = $e->getMessage();
      }
 }

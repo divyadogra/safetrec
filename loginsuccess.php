@@ -39,16 +39,9 @@
 			data-toggle="dropdown"> Admin <span class="caret"></span>
 		</a>
 			<ul class="dropdown-menu" role="menu">
-				<li><a data-target="#viewUser" data-toggle="tab" ng-click="getUsers()">User</a>
-					<ul class="dropdown-menu" role="menu">
-						<li><a data-target="#viewUser" data-toggle="tab" ng-click="getUsers()">View Users</a>
-						</li>
-					</ul>
-				</li>
-
-				<li><a data-target="#addUser" data-toggle="tab">Agency</a></li>
-				<li><a data-target="#editUser" data-toggle="tab">Division</a></li>
-				
+				<li><a data-target="#viewUser" data-toggle="tab" ng-click="getUsers()">User</a></li>
+				<li><a data-target="#viewAgency" data-toggle="tab">Agency</a></li>
+				<li><a data-target="#viewDivision" data-toggle="tab">Division</a></li>		
 			</ul></li>
 	</ul>
 <div class="tab-content">	
@@ -73,7 +66,7 @@
 						</tr>
 					</thead>
 					<tbody
-						ng-repeat="suser in users">
+						ng-repeat="suser in users track by suser.id">
 						<tr>
 							<td><a href="#" ng-click="viewUser(suser)">{{suser.lastName}}, {{suser.firstName}} </a></td>
 							<td>{{suser.email}}</td>
@@ -112,11 +105,6 @@
 								<label>First Name:</label> <input type="text" required
 									id="firstName" name="firstName" class="form-control"
 									ng-model="user.firstName"></input>
-								<!-- <span
-									ng-show="form1.firstName.$invalid"
-									class="glyphicon glyphicon-remove form-control-feedback"></span>
-								<span ng-show="!form1.firstName.$invalid"
-									class="glyphicon glyphicon-ok form-control-feedback"></span> -->
 							</div>
 
 							<div class="form-group has-feedback">
@@ -124,11 +112,6 @@
 								<label>Last Name:</label> <input type="text" required
 									id="lastName" name="lastName" class="form-control"
 									ng-model="user.lastName"></input>
-								<!--  <span
-									ng-show="form1.lastName.$invalid"
-									class="glyphicon glyphicon-remove form-control-feedback"></span>
-								<span ng-show="!form1.lastName.$invalid"
-									class="glyphicon glyphicon-ok form-control-feedback"></span> -->
 							</div>
 							<div class="form-group has-feedback">
 								<!-- ng-class="{'has-error': form1.email.$invalid, 'has-success': !form1.email.$invalid}" -->
@@ -192,6 +175,12 @@
 				</div>
 			</div>
 	</div>
+	<div role="tabpanel" class="tab-pane" id="viewAgency">
+		<ng-include src="'agency.html'" ng-controller="AgencyCtrl"></ng-include>
+	</div>	
+	<div role="tabpanel" class="tab-pane" id="viewDivision">
+		<ng-include src="'division.html'" ng-controller="DivisionCtrl"></ng-include>
+	</div>	
 </div>
 </div>
 </body>

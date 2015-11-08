@@ -1,0 +1,38 @@
+<div>
+<br><label vertical-align="middle">Agencies</label>
+<button ng-click="createNewAgency()">Create New Agency</button>
+<div ng-show="agencyModel.create">
+	<label>Name</label><input type="text" ng-model="agencyModel.agencyName"/>
+	<label>Description</label><input type="text" ng-model="agencyModel.agencyDescription"/>
+	<button ng-click="createAgency()">Save</button>
+	<button ng-click="cancel()">Cancel</button>
+</div>	
+<br> <label ng-hide="agencyModel.agencies">No Agency Added yet</label>
+<br>
+<div id="dvData" class="table-responsive" ng-show="agencyModel.agencies">
+	<table id="testTable" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<td><b>Name</td>
+				<td><b>Description</td>
+				<td><b>Action</td>
+			</tr>
+		</thead>
+		<tbody
+			ng-repeat="agency in agencyModel.agencies">
+		<tr>
+			<td><input ng-disabled="!agencyModel.editMode" type="text" ng-model="agency.name"/></td>
+			<td><input ng-disabled="!agencyModel.editMode" type="textArea" ng-model="agency.description"/></td>
+			<td ng-show="!agencyModel.editMode">
+				<button class="btn-group btn-group-xs btn-primary" ng-click="editAgency(agency)">Edit</button>
+			</td>
+			<td ng-show="agencyModel.editMode && agencyModel.selectedAgency == agency.id">
+				<button class="btn-group btn-group-xs btn-primary" ng-click="updateAgency(agency)">Update</button>
+				<button class="btn-group btn-group-xs btn-primary" ng-click="cancel()">Cancel</button>
+				<button class="btn-group btn-group-xs btn-primary" ng-click="deleteAgency(agency)">Delete</button>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+</div>

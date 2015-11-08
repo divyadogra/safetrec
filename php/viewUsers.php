@@ -3,6 +3,7 @@ include "dbConnect.php";
 try{
 	 		
             $query = "select id as userId, firstName, lastName, email, phone, fax, role from user";         
+
             $results = executeQuery($query);
 
             $response = json_encode($results);

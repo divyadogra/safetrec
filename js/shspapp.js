@@ -73,3 +73,62 @@ app.controller("MainCtrl",function($scope,$http, $window){
         user.userId = userId;
     }
 });
+
+app.controller("AgencyCtrl", function($scope, $http){
+    var agencyModel = {};
+    $scope.agencyModel = agencyModel;
+
+    var init = function(){
+        agencyModel.agencyName = null;
+        agencyModel.agencyDescription = undefined;
+        agencyModel.editMode = false;
+        agencyModel.create = false;
+        $http.get("php/agency.php").success(function(data) {
+            agencyModel.agencies = data;   
+        }).error(function(data) {
+            agencyModel.errorObj = data;
+        })
+    }
+
+    $scope.editAgency = function(agency) {
+        agencyModel.editMode = true;
+        agencyModel.selectedAgency = agency.id;
+    }
+
+    $scope.cancel = function() {
+        init();
+    }
+
+    $scope.createNewAgency = function() {
+        agencyModel.create = true;
+    }
+
+    $scope.createAgency = function() {
+        $http.post("php/agency.php", {name:agencyModel.agencyName, description:agencyModel.agencyDescription}).success(function(data) {
+            init();
+        }).error(function(data) {
+            agencyModel.errorObj = data;
+        })  
+    }
+
+    $scope.updateAgency = function(agency) {
+       $http.put("php/agency.php", {id:agency.id, name:agency.name, description:agency.description}).success(function(data) {
+            init();
+        }).error(function(data) {
+            agencyModel.errorObj = data;
+        })  
+    }
+
+    $scope.deleteAgency = function(agency) {
+        $http.delete("php/agency.php", {params: {id:agency.id}}).success(function(data) {
+           init(); 
+        }).error(function(data) {
+            agencyModel.errorObj = data;
+        })
+    }
+
+    init();
+})
+
+app.controller("DivisionCtrl", function($scope, $http){
+})
