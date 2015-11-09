@@ -1,44 +1,82 @@
 <div>
 <br><h3 vertical-align="middle">Divisions</h3>
 <br>
-<label for="agencySelect">Lead Agency:</label>
-<select name="agencySelect" id="agencySelect" ng-model="divisionModel.agency" ng-change="getDivisions(divisionModel.agency)">
-	 <option ng-repeat="agency in divisionModel.agencies" value="{{agency.id}}">{{agency.name}}</option>
-</select>
+<div class="form-inline">
+  	
+  		<label class="control-label" for="company">Lead Agency:</label>
+		<select class="form-control" name="agencySelect" id="agencySelect" ng-model="divisionModel.agency" ng-change="getDivisions(divisionModel.agency)">
+		 	<option ng-repeat="agency in divisionModel.agencies" value="{{agency.id}}">{{agency.name}}</option>
+		</select>
+		<button class="btn btn-primary" ng-show="divisionModel.agency" ng-click="createNewDivision()">Create New Division</button>
+	
+</div>
 
-<button ng-show="divisionModel.agency" ng-click="createNewDivision()">Create New Division</button>
+
 <div ng-show="divisionModel.create">
-	<label>Name</label><input type="text" ng-model="divisionModel.divisionName"/>
-	<label>Description</label><input type="text" ng-model="divisionModel.divisionDescription"/>
-	<button ng-click="createDivision()">Save</button>
-	<button ng-click="cancel()">Cancel</button>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Create Division</h3>
+		</div>
+		<div class="panel-body">
+			<form>
+				<label>Name</label><input class="form-control" type="text" ng-model="divisionModel.divisionName"/>
+				<label>Description</label><textArea class="form-control" ng-model="divisionModel.divisionDescription"/>
+				<br/>
+				<button class="btn btn-primary" ng-click="createDivision()">Save</button>
+				<button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+			</form>
+		</div>
+	</div>
 </div>	
 <br> <br><label ng-hide="divisionModel.divisions || !divisionModel.agency">No Division Added yet</label>
 <br>
 <div id="dvData" class="table-responsive" ng-show="divisionModel.divisions">
-	<table id="testTable" class="table table-striped table-bordered">
-		<thead>
-			<tr>
-				<td><b>Name</td>
-				<td><b>Description</td>
-				<td><b>Action</td>
-			</tr>
-		</thead>
-		<tbody
-			ng-repeat="division in divisionModel.divisions">
-		<tr>
-			<td><input ng-disabled="!divisionModel.editMode" type="text" ng-model="division.name"/></td>
-			<td><input ng-disabled="!divisionModel.editMode" type="textArea" ng-model="division.description"/></td>
-			<td ng-show="!divisionModel.editMode">
-				<button class="btn-group btn-group-xs btn-primary" ng-click="editDivision(division)">Edit</button>
-			</td>
-			<td ng-show="divisionModel.editMode && divisionModel.selectedDivision == division.id">
-				<button class="btn-group btn-group-xs btn-primary" ng-click="updateDivision(division)">Update</button>
-				<button class="btn-group btn-group-xs btn-primary" ng-click="cancel()">Cancel</button>
-				<button class="btn-group btn-group-xs btn-primary" ng-click="deleteDivision(division)">Delete</button>
-			</td>
-		</tr>
-		</tbody>
-	</table>
-</div>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<table id="testTable" class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody
+					ng-repeat="division in divisionModel.divisions">
+				<tr>
+					<td ng-show="!(divisionModel.editMode && divisionModel.selectedDivision == division.id)">
+						{{division.name}}
+					</td>
+					<td ng-show="divisionModel.editMode && divisionModel.selectedDivision == division.id">
+						<input class="form-control" type="text" ng-model="division.name"/>
+					</td>
+
+					<td ng-show="!(divisionModel.editMode && divisionModel.selectedDivision == division.id)">
+						{{division.description}}
+					</td>
+					<td ng-show="divisionModel.editMode && divisionModel.selectedDivision == division.id">
+						<textarea class="form-control" ng-show="divisionModel.editMode" ng-model="division.description"/>
+					</td>
+					
+					<td ng-show="!divisionModel.editMode">
+						<button title = "Edit" type="button" class="btn btn-primary btn-lg" ng-click="editDivision(division)">
+							<span class="glyphicon glyphicon-pencil" aria-hidden="true" />
+						</button>
+					</td>
+					<td ng-show="divisionModel.editMode && divisionModel.selectedDivision == division.id">
+						<button title = "Update" type="button" class="btn btn-success btn-lg" ng-click="updateDivision(division)">
+							<span class="glyphicon glyphicon-ok" aria-hidden="true"/>
+						</button>
+						<button title = "Delete" type="button" class="btn btn-danger btn-lg" ng-click="deleteDivision(division)">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+						</button>
+						<button title = "Cancel" type="button" class="btn btn-warning btn-lg" ng-click="cancel()">	
+							<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"/>
+						</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>

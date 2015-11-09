@@ -1,38 +1,76 @@
 <div>
-<br><h3 vertical-align="middle">Agencies</h3>
-<button ng-click="createNewAgency()">Create New Agency</button>
+	<h3 vertical-align="middle">Agencies</h3>
+<br/>
+	<button class="btn btn-primary" ng-click="createNewAgency()">Create New Agency</button>
+</div>
+<br/>
 <div ng-show="agencyModel.create">
-	<label>Name</label><input type="text" ng-model="agencyModel.agencyName"/>
-	<label>Description</label><input type="text" ng-model="agencyModel.agencyDescription"/>
-	<button ng-click="createAgency()">Save</button>
-	<button ng-click="cancel()">Cancel</button>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Create Agency</h3>
+		</div>
+		<div class="panel-body">
+			<form>
+				<label>Name</label><input type="text" class="form-control" ng-model="agencyModel.agencyName"/>
+				<label>Description</label><textarea rows="2"class="form-control" ng-model="agencyModel.agencyDescription"/>
+				<br/>
+				<button class="btn btn-primary" ng-click="createAgency()">Save</button>
+				<button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+			</form>
+		</div>
+	</div>
 </div>	
-<br> <label ng-hide="agencyModel.agencies">No Agency Added yet</label>
-<br>
+<br/>
+<label ng-hide="agencyModel.agencies">No Agency Added yet</label>
 <div id="dvData" class="table-responsive" ng-show="agencyModel.agencies">
-	<table id="testTable" class="table table-striped table-bordered">
-		<thead>
-			<tr>
-				<td><b>Name</td>
-				<td><b>Description</td>
-				<td><b>Action</td>
-			</tr>
-		</thead>
-		<tbody
-			ng-repeat="agency in agencyModel.agencies">
-		<tr>
-			<td><input ng-disabled="!agencyModel.editMode" type="text" ng-model="agency.name"/></td>
-			<td><input ng-disabled="!agencyModel.editMode" type="textArea" ng-model="agency.description"/></td>
-			<td ng-show="!agencyModel.editMode">
-				<button class="btn-group btn-group-xs btn-primary" ng-click="editAgency(agency)">Edit</button>
-			</td>
-			<td ng-show="agencyModel.editMode && agencyModel.selectedAgency == agency.id">
-				<button class="btn-group btn-group-xs btn-primary" ng-click="updateAgency(agency)">Update</button>
-				<button class="btn-group btn-group-xs btn-primary" ng-click="cancel()">Cancel</button>
-				<button class="btn-group btn-group-xs btn-primary" ng-click="deleteAgency(agency)">Delete</button>
-			</td>
-		</tr>
-		</tbody>
-	</table>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<table id="testTable" class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody
+					ng-repeat="agency in agencyModel.agencies">
+				<tr>
+					
+					<td ng-show="!(agencyModel.editMode && agencyModel.selectedAgency == agency.id)">
+						{{agency.name}}
+					</td>
+					<td ng-show="agencyModel.editMode && agencyModel.selectedAgency == agency.id">
+						<input class="form-control" type="text" ng-model="agency.name"/>
+					</td>
+
+					<td ng-show="!(agencyModel.editMode && agencyModel.selectedAgency == agency.id)">
+						{{agency.description}}
+					</td>
+					<td ng-show="agencyModel.editMode && agencyModel.selectedAgency == agency.id">
+						<textarea class="form-control" ng-show="agencyModel.editMode" ng-model="agency.description"/>
+					</td>
+
+					<td ng-show="!agencyModel.editMode">
+						<button title = "Edit" type="button" class="btn btn-primary btn-lg" ng-click="editAgency(agency)">
+							<span class="glyphicon glyphicon-pencil" aria-hidden="true" />
+						</button>
+					</td>
+					<td ng-show="agencyModel.editMode && agencyModel.selectedAgency == agency.id">
+						<button title = "Update" type="button" class="btn btn-success btn-lg" ng-click="updateAgency(agency)">
+							<span class="glyphicon glyphicon-ok" aria-hidden="true"/>
+						</button>
+						<button title = "Delete" type="button" class="btn btn-danger btn-lg" ng-click="deleteAgency(agency)">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true" />
+						</button>
+						<button title = "Cancel" type="button" class="btn btn-warning btn-lg" ng-click="cancel()">
+							<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"/>
+						</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
 </div>

@@ -3,24 +3,31 @@
 <head>
 <title>My Login</title>
 <style type="text/css">
-      body{padding-top:20px;}
+    body{padding-top:20px;}
+	h1   {color:#DF7401}
+	.form-inline > * {
+   margin:7px;
+}
+</style>
 </style>
 <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="../css/safetrec.css" rel="stylesheet">
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="../js/angular.js"></script>
-<script src="../js/bootstrap.js"></script>
+<script src="../js/bootstrap.js"></script>	
 <script src="../js/shspapp.js"></script>
 </head>
 <body >
 <div class="container" ng-controller="MainCtrl"> 
 <div class="wrapper">
-       <img src="../img/shsp-logo.gif" class="img-responsive" alt="Responsive image">
-	   <div class="container">
-	   <h5 align="right">
+       <img src="../img/shsp-logo.gif" align="right" width="120" height="50" class="img-responsive" alt="Responsive image">
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       <h5 align="right">
 			<a id="Logout" name="Logout" align="right" ng-click="logout()">Logout</a>
-			</h5>
-			</div>
+		</h5>
      </div>
 
 <div>
