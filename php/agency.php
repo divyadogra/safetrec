@@ -7,11 +7,11 @@ try {
     
       if ($request_type == 'GET') {
             viewAgencies();
-      } else if (request_type == 'POST') {
+      } else if ($request_type == 'POST') {
             createAgency();
-      } else if (request_type == 'PUT') {
+      } else if ($request_type == 'PUT') {
             updateAgency();
-      } else if (request_type == 'DELETE') {
+      } else if ($request_type == 'DELETE') {
             deleteAgency();
 
       }
@@ -73,7 +73,7 @@ function updateAgency() {
 function deleteAgency() {
       try{
             
-            $id = $_GET['id'];;
+            $id = $_GET['id'];
 
             $query = sprintf("delete from agency where id=%d", $id);         
             $results = executeQuery($query);

@@ -51,7 +51,7 @@ app.controller("MainCtrl",function($scope,$http, $window){
         request.userId = suser.userId;
         
         $http.post("../php/viewUser.php", request).success(function(data) {
-            $scope.viewUser = data;
+            $scope.viewUser = data.length != 0 ? data: undefined;
             $scope.users = null;
         }).error(function(data) {
             model.errorObj = data;
@@ -84,7 +84,7 @@ app.controller("AgencyCtrl", function($scope, $http){
         agencyModel.editMode = false;
         agencyModel.create = false;
         $http.get("../php/agency.php").success(function(data) {
-            agencyModel.agencies = data;   
+            agencyModel.agencies = data.length != 0 ? data: undefined;   
         }).error(function(data) {
             agencyModel.errorObj = data;
         })
@@ -131,4 +131,69 @@ app.controller("AgencyCtrl", function($scope, $http){
 })
 
 app.controller("DivisionCtrl", function($scope, $http){
+    var divisionModel = {};
+    $scope.divisionModel = divisionModel;
+
+    var init = function(){
+        $http.get("../php/agency.php").success(function(data) {
+            divisionModel.agencies = data;
+        }).error(function(data) {
+            divisionModel.errorObj = data;
+        })
+    }
+
+    var setDefaults = function() {
+        divisionModel.divisionName = null;
+        divisionModel.divisionDescription = undefined;
+        divisionModel.editMode = false;
+        divisionModel.create = false;
+    }
+
+    $scope.getDivisions = function(agencyId) {
+        setDefaults();
+        $http.get("../php/division.php", {params: {agencyId: agencyId}}).success(function(data) {
+            divisionModel.divisions = data.length != 0 ? data: undefined;   
+        }).error(function(data) {
+            divisionModel.errorObj = data;
+        })
+    }
+
+    $scope.editDivision = function(division) {
+        divisionModel.editMode = true;
+        divisionModel.selectedDivision = division.id;
+    }
+
+    $scope.cancel = function() {
+        setDefaults();
+    }
+
+    $scope.createNewDivision = function() {
+        divisionModel.create = true;
+    }
+
+    $scope.createDivision = function() {
+        $http.post("../php/division.php", {name:divisionModel.divisionName, description:divisionModel.divisionDescription, agencyId: divisionModel.agency}).success(function(data) {
+            $scope.getDivisions(divisionModel.agency);
+        }).error(function(data) {
+            divisionModel.errorObj = data;
+        })  
+    }
+
+    $scope.updateDivision = function(division) {
+       $http.put("../php/division.php", {id:division.id, name:division.name, description:division.description}).success(function(data) {
+            $scope.getDivisions(divisionModel.agency);
+        }).error(function(data) {
+            divisionModel.errorObj = data;
+        })  
+    }
+
+    $scope.deleteDivision = function(division) {
+        $http.delete("../php/division.php", {params: {id:division.id}}).success(function(data) {
+           $scope.getDivisions(divisionModel.agency);
+        }).error(function(data) {
+            divisionModel.errorObj = data;
+        })
+    }
+
+    init();
 })
