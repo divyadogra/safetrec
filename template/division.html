@@ -1,11 +1,10 @@
 <div>
-<br><h3 vertical-align="middle">Divisions</h3>
-<br>
+<h3 vertical-align="middle">Divisions</h3>
 <div class="form-inline">
-  	
-  		<label class="control-label" for="company">Lead Agency:</label>
-		<select class="form-control" name="agencySelect" id="agencySelect" ng-model="divisionModel.agency" ng-change="getDivisions(divisionModel.agency)">
-		 	<option ng-repeat="agency in divisionModel.agencies" value="{{agency.id}}">{{agency.name}}</option>
+		<label class="control-label" for="company">Lead Agency:</label>
+		<select class="form-control" name="agencySelect" id="agencySelect" ng-model="divisionModel.agency" ng-change="getDivisions(divisionModel.agency)" ng-options="agency.id as agency.name for agency in divisionModel.agencies">
+			<option value="">Choose One</option>
+		 	<!-- <option ng-options="agency in divisionModel.agencies" value="{{agency.id}}">{{agency.name}}</option> -->
 		</select>
 		<button class="btn btn-primary" ng-show="divisionModel.agency" ng-click="createNewDivision()">Create New Division</button>
 	
@@ -28,8 +27,7 @@
 		</div>
 	</div>
 </div>	
-<br> <br><label ng-hide="divisionModel.divisions || !divisionModel.agency">No Division Added yet</label>
-<br>
+<br><label ng-hide="divisionModel.divisions || !divisionModel.agency">No Division Added yet</label>
 <div id="dvData" class="table-responsive" ng-show="divisionModel.divisions">
 	<div class="panel panel-default">
 		<div class="panel-body">

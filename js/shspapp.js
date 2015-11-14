@@ -17,61 +17,91 @@ app.controller("MainCtrl",function($scope,$http, $window){
     $scope.logout = function() {
     	$window.location.href = "login.php";
     }
+});
 
-    $scope.getUsers = function() { 
-        $http.post("../php/viewUsers.php").success(function(data) {
-            $scope.users = data;   
+app.controller("UserCtrl", function($scope, $http){
+
+    var userModel = {};
+    $scope.userModel = userModel;
+    userModel.viewMode = false;
+    $scope.getUsers = function() {
+        userModel.viewMode = false;
+        userModel.editMode = false; 
+        $http.get("../php/user.php").success(function(data) {
+            userModel.users = data;   
         }).error(function(data) {
-            model.errorObj = data;
+            userModel.errorObj = data;
+        })
+    }
+
+    $scope.createNewUser = function() {
+        userModel.showPassword = true;
+        userModel.selectedUser = undefined;
+        userModel.editMode = true;
+        $http.get("../php/agency.php").success(function(data) {
+            userModel.agencies = data;
+        }).error(function(data) {
+            userModel.errorObj = data;
+        });
+    }
+
+    $scope.getDivisions = function(agencyId) {
+         $http.get("../php/division.php", {params: {agencyId: agencyId}}).success(function(data) {
+            userModel.divisions = data.length != 0 ? data: undefined;   
+        }).error(function(data) {
+            userModel.errorObj = data;
         })
     }
 
     $scope.createUser = function() {
-        if ($scope.form1.$invalid) {
-            return;
-        }
-        user.userId = null;
-        var request = {};
-        request.firstName = user.firstName;
-        request.lastName = user.lastName;
-        request.email = user.email;
-        request.password = user.password;
-        request.role = user.role;
         
-        $http.post("../php/createUser.php", request).success(function(data) {
-            $scope.userCreated = true;
-            resetUser();
+        var request = {};
+        request.firstName = userModel.selectedUser.firstName;
+        request.lastName = userModel.selectedUser.lastName;
+        request.email = userModel.selectedUser.email;
+        request.password = userModel.selectedUser.password;
+        request.role = userModel.selectedUser.role;
+        request.phone = userModel.selectedUser.phone;
+        request.fax = null;
+        request.agencyId = userModel.selectedUser.agency;
+        request.divisionId = userModel.selectedUser.division;
+        
+        $http.post("../php/user.php", request).success(function(data) {
+            $scope.getUsers();
         }).error(function(data) {
-            model.errorObj = data;
+            userModel.errorObj = data;
         })
     }
 
-    $scope.viewUser = function(suser) {
-        var request = {};
-        request.userId = suser.userId;
-        
-        $http.post("../php/viewUser.php", request).success(function(data) {
-            $scope.viewUser = data.length != 0 ? data: undefined;
-            $scope.users = null;
+    var viewUser = function(user) {
+        $http.get("../php/user.php", {params: {id: user.id}}).success(function(data) {
+            userModel.selectedUser = data.length != 0 ? data[0]: undefined;   
         }).error(function(data) {
-            model.errorObj = data;
+            userModel.errorObj = data;
         })
     }
 
-    var toggleView = function(){
-        if (toggleView == false) {
-            toggleView = true;
-        } else {
-            toggleView = false;
-        }
+    $scope.viewUser = function(user) {   
+        viewUser(user);
+        userModel.viewMode = true;
     }
 
-    var resetUser = function () {
-        var userId = user.userId;
-        user = {};
-        $scope.user = user;
-        user.userId = userId;
+    $scope.editUser = function(user) {
+        viewUser(user);
+        userModel.editMode = true;
+        userModel.showPassword = false;
     }
+
+    $scope.deleteUser = function() {
+         $http.delete("../php/user.php", {params: {id: userModel.selectedUser.id}}).success(function(data) {
+            $scope.getUsers();
+        }).error(function(data) {
+            userModel.errorObj = data;
+        })
+    }
+
+     $scope.getUsers();
+
 });
 
 app.controller("AgencyCtrl", function($scope, $http){

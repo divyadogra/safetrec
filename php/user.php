@@ -6,7 +6,7 @@ try {
       $request_type = $_SERVER['REQUEST_METHOD'];
 
       if ($request_type == 'GET') {
-            $userId = $_GET['userId'];
+            $userId = $_GET['id'];
             if ($userId != null) {
                   viewUser($userId);
             } else {
@@ -28,7 +28,7 @@ try {
 function viewUsers() {
       try{
 
-            $query = "select id, first_name, last_name, email from user";         
+            $query = "select id, first_name as firstName, last_name as lastName, email from user";         
             $results = executeQuery($query);
             $response = json_encode($results);
             echo $response;
@@ -40,7 +40,7 @@ function viewUsers() {
 function viewUser($userId) {
       try{
 
-            $query = "select id, first_name, last_name, email, fax, role, phone, agencyId, divisionId from user where id=".$userId;         
+            $query = "select id, first_name as firstName, last_name as lastName, email, fax, role, phone, agency_id as agencyId, division_id as divisionId from user where id=".$userId;         
             $results = executeQuery($query);
             $response = json_encode($results);
             echo $response;

@@ -1,0 +1,137 @@
+<div>
+			<h3 vertical-align="middle">Users</h3>
+			<button class="btn btn-primary" ng-click="createNewUser()">Create New User</button>
+			<br>
+			<div ng-show="userModel.editMode">
+			<br>
+			<div class="alert alert-success" ng-show="userCreated">User
+				successfully created.</div>
+			<div class="alert alert-danger" ng-show="userModel.errorObj">User
+				creation failed with error : {{userModel.errorObj.description}}</div>
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">Enter User Details</h3>
+				</div>
+				<div class="panel-body">
+					<form name="form1" role="form">
+						<div class="col-xs-4">
+							<div class="form-group has-feedback">
+								<!--  ng-class="{'has-error': form1.firstName.$invalid, 'has-success': !form1.firstName.$invalid}" -->
+								<label>First Name:</label> <input type="text" required
+									id="firstName" name="firstName" class="form-control"
+									ng-model="userModel.selectedUser.firstName"></input>
+							</div>
+
+							<div class="form-group has-feedback">
+								<!-- ng-class="{'has-error': form1.lastName.$invalid, 'has-success': !form1.lastName.$invalid}" -->
+								<label>Last Name:</label> <input type="text" required
+									id="lastName" name="lastName" class="form-control"
+									ng-model="userModel.selectedUser.lastName"></input>
+							</div>
+							<div class="form-group has-feedback">
+								<!-- ng-class="{'has-error': form1.email.$invalid, 'has-success': !form1.email.$invalid}" -->
+								<label>Phone:</label> <input type="text" id="phone" 
+									name="phone" class="form-control" ng-model="userModel.selectedUser.phone"></input>
+							</div>
+
+							<div class="form-group has-feedback">
+								<!-- ng-class="{'has-error': form1.email.$invalid, 'has-success': !form1.email.$invalid}" -->
+								<label>Agency:</label> <select class="form-control" required
+									ng-model="userModel.selectedUser.agency" name="agency" id="agency" ng-change="getDivisions(userModel.selectedUser.agency)">
+									<option ng-repeat="agency in userModel.agencies" value="{{agency.id}}">
+									{{agency.name}}</option>
+								</select>
+							</div>
+
+							<div class="form-group has-feedback" ng-show="userModel.divisions">
+								<!-- ng-class="{'has-error': form1.email.$invalid, 'has-success': !form1.email.$invalid}" -->
+								<label>Division:</label> <select class="form-control" required
+									ng-model="userModel.selectedUser.division" name="division" id="division">
+									<option ng-repeat="division in userModel.divisions" value="{{division.id}}">
+									{{division.name}}</option>
+								</select>
+							</div>
+
+							<div class="form-group has-feedback">
+								<!-- ng-class="{'has-error': form1.email.$invalid, 'has-success': !form1.email.$invalid}" -->
+								<label>Email Id:</label> <input type="email" id="email" required
+									name="email" class="form-control" ng-model="userModel.selectedUser.email"></input>
+								<!--  <span ng-show="form1.email.$invalid"
+									class="glyphicon glyphicon-remove form-control-feedback"></span>
+								<span ng-show="!form1.email.$invalid"
+									class="glyphicon glyphicon-ok form-control-feedback"></span> -->
+							</div>
+
+							<div class="form-group has-feedback" ng-hide="!userModel.showPassword">
+								<!-- ng-class="{'has-error': form1.email.$invalid, 'has-success': !form1.email.$invalid}" -->
+								<label>Password:</label> <input type="password" id="password" required
+									name="password" class="form-control" ng-model="userModel.selectedUser.password"></input>
+							</div>
+
+							<div class="form-group">
+								<!-- ng-class="{'has-error': form1.role.$invalid, 'has-success': !form1.role.$invalid}" -->
+								<label>Role:</label> <select class="form-control" required
+									ng-model="userModel.selectedUser.role" name="role" id="role">
+									<option value="" ng-hide="userModel.selectedUser.role" selected>Choose
+										One</option>
+									<option>Basic</option>
+									<option>Action Lead</option>
+									<option>Challenge Area Lead</option>
+									<option>Admin</option>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<button class="btn btn-primary" type="submit"
+									ng-click="createUser()">Save</button>
+								<button class="btn btn-primary" type="submit"
+									ng-click="getUsers()">Cancel</button>
+								<button class="btn btn-primary" type="submit" ng-show="!userModel.showPassword"
+									ng-click="deleteUser()">Delete</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+	</div>
+			<br> <label ng-hide="userModel.users">No User Added yet</label>
+			<div id="dvData" class="table-responsive" ng-show="userModel.users && !userModel.viewMode && !userModel.editMode">
+				<table id="testTable" class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<td><b>Name</td>
+							<td><b>Email</td>
+							<td><b>Action</td>
+						</tr>
+					</thead>
+					<tbody
+						ng-repeat="user in userModel.users">
+						<tr>
+							<td><a href="#" ng-click="viewUser(user)">{{user.lastName}}, {{user.firstName}} </a></td>
+							<td>{{user.email}}</td>
+							<td><button class="btn-group btn-group-xs btn-primary" ng-click="editUser(user)">Edit</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div ng-show="userModel.viewMode">
+			<br><h4>User Details</h4>
+			<br>
+			<label> First Name : {{userModel.selectedUser.firstName}} </label>
+			<br>
+			<label> Last Name : {{userModel.selectedUser.lastName}} </label>
+			<br>
+			<label> Email : {{userModel.selectedUser.email}} </label>
+			<br>
+			<label> Phone : {{userModel.selectedUser.phone}} </label>
+			<br>
+			<label> Agency : {{userModel.selectedUser.agency}} </label>
+			<br>
+			<label> Role : {{userModel.selectedUser.role}} </label>
+			<br>
+			<button ng-click="getUsers()">Back</button>
+			<button ng-click="editUser()">Edit</button>
+		</div>
+
