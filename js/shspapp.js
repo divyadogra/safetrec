@@ -227,3 +227,78 @@ app.controller("DivisionCtrl", function($scope, $http){
 
     init();
 })
+
+app.controller("ChallengeAreaCtrl", function($scope, $http){
+    var challengeAreaModel = {};
+    $scope.challengeAreaModel = challengeAreaModel;
+
+    var init = function(){
+        challengeAreaModel.challengeAreaName = null;
+        challengeAreaModel.editMode = false;
+        challengeAreaModel.create = false;
+        $http.get("../php/challengeArea.php").success(function(data) {
+            challengeAreaModel.challengeAreas = data.length != 0 ? data: undefined;   
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+        $http.get("../php/user.php").success(function(data) {
+            challengeAreaModel.leaders = data;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        });
+    }
+
+    $scope.editChallengeArea = function(challengeArea) {
+        challengeAreaModel.editMode = true;
+        challengeAreaModel.selectedChallengeArea = challengeArea;
+        challengeAreaModel.leader1 = challengeArea.leader1_id;
+        challengeAreaModel.leader2 = challengeArea.leader2_id;
+
+    }
+
+    $scope.cancel = function() {
+        init();
+    }
+
+    $scope.createNewChallengeArea = function() {
+        challengeAreaModel.create = true;
+    }
+
+    $scope.createChallengeArea = function() {
+        
+        $http.post("../php/challengeArea.php", {name:challengeAreaModel.challengeAreaName, leader1:challengeAreaModel.leader1,leader2:challengeAreaModel.leader2}).success(function(data) {
+            init();
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })  
+    }
+
+    $scope.updateChallengeArea = function(challengeArea) {
+       
+       $http.put("../php/challengeArea.php", {id:challengeArea.id, name:challengeArea.name,leader1:challengeAreaModel.leader1,leader2:challengeAreaModel.leader2}).success(function(data) {
+            init();
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })  
+    }
+
+    $scope.deleteChallengeArea = function(challengeArea) {
+        $http.delete("../php/challengeArea.php", {params: {id:challengeArea.id}}).success(function(data) {
+           init(); 
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.getUsers = function() {
+        userModel.viewMode = false;
+        userModel.editMode = false; 
+        $http.get("../php/user.php").success(function(data) {
+            userModel.users = data;   
+        }).error(function(data) {
+            userModel.errorObj = data;
+        })
+    }
+
+    init();
+})

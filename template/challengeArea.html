@@ -1,0 +1,103 @@
+<div>
+	<h3 vertical-align="middle">Challenge Areas</h3>
+	<button class="btn btn-primary" ng-click="createNewChallengeArea()">Create New Challenge Area</button>
+</div>
+<div ng-show="challengeAreaModel.create">
+	<br/>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Create Challenge Area</h3>
+		</div>
+		<div class="panel-body">
+			<form>
+				<label>Name</label><input type="text" class="form-control" ng-model="challengeAreaModel.challengeAreaName"/>
+				<label>Leader 1:</label> <select class="form-control" required
+				ng-model="challengeAreaModel.leader1" name="leader1" id="leader1">
+				<option ng-repeat="leader in challengeAreaModel.leaders" value="{{leader.id}}">
+					{{leader.lastName}}, {{leader.firstName}}</option>
+				</select>
+				<label>Leader 2:</label> <select class="form-control" required
+				ng-model="challengeAreaModel.leader2" name="leader2" id="leader2">
+				<option ng-repeat="leader in challengeAreaModel.leaders" value="{{leader.id}}">
+					{{leader.lastName}}, {{leader.firstName}}</option>
+				</select>
+				
+				<br/>
+				<button class="btn btn-primary" ng-click="createChallengeArea()">Save</button>
+				<button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+			</form>
+		</div>
+	</div>
+</div>	
+<br/>
+<label ng-hide="challengeAreaModel.challengeAreas">No Challenge Area Added yet</label>
+<div id="dvData" class="table-responsive" ng-show="challengeAreaModel.challengeAreas">
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<table id="testTable" class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Leader 1</th>
+						<th>Leader 2</th>
+						<!-- TODO add leaders here -->
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody
+					ng-repeat="challengeArea in challengeAreaModel.challengeAreas">
+				<tr>
+					
+					<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
+						{{challengeArea.name}}
+					</td>
+					<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
+						{{challengeArea.leader1LastName}}, {{challengeArea.leader1FirstName}}
+					</td>
+					<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
+						{{challengeArea.leader2LastName}}, {{challengeArea.leader2FirstName}}
+					</td>
+					<td ng-show="challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id">
+						<input class="form-control" type="text" ng-model="challengeArea.name"/>
+					</td>
+					<td ng-show="challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id">
+						<select class="form-control" required
+						ng-model="challengeAreaModel.leader1" name="leader1" id="leader1">
+						<option ng-repeat="leader in challengeAreaModel.leaders" value="{{leader.id}}">
+							{{leader.lastName}}, {{leader.firstName}}</option>
+						</select>
+					</td>
+					<td ng-show="challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id">
+						<select class="form-control" required
+						ng-model="challengeAreaModel.leader2" name="leader2" id="leader2">
+						<option ng-repeat="leader in challengeAreaModel.leaders" value="{{leader.id}}">
+							{{leader.lastName}}, {{leader.firstName}}</option>
+						</select>
+					</td>
+
+
+					<!-- TODO add leaders here -->
+
+					<td ng-show="!challengeAreaModel.editMode">
+						<button title = "Edit" type="button" class="btn btn-primary btn-lg" ng-click="editChallengeArea(challengeArea)">
+							<span class="glyphicon glyphicon-pencil" aria-hidden="true" />
+						</button>
+					</td>
+					<td ng-show="challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id">
+						<button title = "Update" type="button" class="btn btn-success btn-lg" ng-click="updateChallengeArea(challengeArea)">
+							<span class="glyphicon glyphicon-ok" aria-hidden="true"/>
+						</button>
+						<button title = "Delete" type="button" class="btn btn-danger btn-lg" ng-click="deleteChallengeArea(challengeArea)">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true" />
+						</button>
+						<button title = "Cancel" type="button" class="btn btn-warning btn-lg" ng-click="cancel()">
+							<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"/>
+						</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</div>

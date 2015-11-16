@@ -39,7 +39,7 @@
 			</a>
 		</li>
 		<li role="presentation">
-			<a href="#home" aria-controls="home" role="tab" data-toggle="tab"> Challenge Areas
+			<a href="#viewChallengeArea" aria-controls="viewChallengeArea" role="tab" data-toggle="tab"> Challenge Areas
 			</a>
 		</li>
 		<li role="presentation">
@@ -71,6 +71,9 @@
 	</div>	
 	<div role="tabpanel" class="tab-pane" id="viewDivision">
 		<ng-include src="'division.html'" ng-controller="DivisionCtrl"></ng-include>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="viewChallengeArea">
+		<ng-include src="'challengeArea.html'" ng-controller="ChallengeAreaCtrl"></ng-include>
 	</div>	
 </div>
 </div>

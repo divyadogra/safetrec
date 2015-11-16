@@ -3,15 +3,15 @@ include "dbConnect.php";
 
 try {
 
-      var request_type = $_SERVER['REQUEST_METHOD'];
-      if (request_type == 'GET') {
+      $request_type = $_SERVER['REQUEST_METHOD'];
+      if ($request_type == 'GET') {
             viewChallengeAreas();
-      } else if (request_type == 'POST') {
-            createChallengeAreas();
-      } else if (request_type == 'PUT') {
-            updateChallengeAreas();
-      } else if (request_type == 'DELETE') {
-            deleteChallengeAreas();
+      } else if ($request_type == 'POST') {
+            createChallengeArea();
+      } else if ($request_type == 'PUT') {
+            updateChallengeArea();
+      } else if ($request_type == 'DELETE') {
+            deleteChallengeArea();
       }
 } catch (Exception $e) {
  $response = $e->getMessage();
@@ -20,7 +20,10 @@ try {
 function viewChallengeAreas() {
       try{
 
-            $query = "select id, name, leader1_id as leader1, leader2_id as leader2 from challenge_area";         
+            $query = "select ca.id, ca.name, ca.leader1_id, ca.leader2_id, u1.last_name as leader1LastName, 
+            u1.first_name as leader1FirstName, u2.last_name as leader2LastName, u2.first_name as leader2FirstName 
+              from challenge_area as ca, user as u1, user as u2 
+              where ca.leader1_id = u1.id and ca.leader2_id = u2.id";         
             $results = executeQuery($query);
 
             $response = json_encode($results);
@@ -61,7 +64,7 @@ function updateChallengeArea() {
             $leader1_id = $request->leader1;
             $leader2_id = $request->leader2; 
 
-            $query = sprintf("update callenge_area set name='%s', leader1_id=%d, leader2_id=%d where id=%d", $name, $leader1_id, $leader2_id);         
+            $query = sprintf("update challenge_area set name='%s', leader1_id=%d, leader2_id=%d where id=%d", $name, $leader1_id, $leader2_id, $id);         
             $results = executeQuery($query);
 
                   // TODO
@@ -74,9 +77,7 @@ function updateChallengeArea() {
 
 function deleteChallengeArea() {
       try{
-            $deletedata = file_get_contents("php://input");
-            $request = json_decode($deletedata);
-            $id = $request->id;
+            $id = $_GET['id'];
 
             $query = sprintf("delete from challenge_area where id=%d", $id);         
             $results = executeQuery($query);
