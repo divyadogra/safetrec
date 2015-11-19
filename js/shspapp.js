@@ -32,17 +32,17 @@ app.controller("UserCtrl", function($scope, $http){
         }).error(function(data) {
             userModel.errorObj = data;
         })
-    }
-
-    $scope.createNewUser = function() {
-        userModel.showPassword = true;
-        userModel.selectedUser = undefined;
-        userModel.editMode = true;
         $http.get("../php/agency.php").success(function(data) {
             userModel.agencies = data;
         }).error(function(data) {
             userModel.errorObj = data;
         });
+    }
+
+    $scope.createNewUser = function() {
+        userModel.showPassword = true;
+        userModel.selectedUser = undefined;
+        userModel.editMode = true;   
     }
 
     $scope.getDivisions = function(agencyId) {
@@ -53,29 +53,37 @@ app.controller("UserCtrl", function($scope, $http){
         })
     }
 
-    $scope.createUser = function() {
-        
+    $scope.saveUser = function() {  
         var request = {};
+        request.id = userModel.selectedUser.id;
         request.firstName = userModel.selectedUser.firstName;
         request.lastName = userModel.selectedUser.lastName;
         request.email = userModel.selectedUser.email;
         request.password = userModel.selectedUser.password;
         request.role = userModel.selectedUser.role;
         request.phone = userModel.selectedUser.phone;
-        request.fax = null;
-        request.agencyId = userModel.selectedUser.agency;
+        request.agencyId = userModel.selectedUser.agencyId;
         request.divisionId = userModel.selectedUser.division;
-        
-        $http.post("../php/user.php", request).success(function(data) {
+
+        if (request.id != null) {
+            $http.put("../php/user.php", request).success(function(data) {
             $scope.getUsers();
-        }).error(function(data) {
+            }).error(function(data) {
             userModel.errorObj = data;
-        })
+            })
+        }else {
+            $http.post("../php/user.php", request).success(function(data) {
+            $scope.getUsers();
+            }).error(function(data) {
+            userModel.errorObj = data;
+            })
+        }
     }
 
     var viewUser = function(user) {
         $http.get("../php/user.php", {params: {id: user.id}}).success(function(data) {
-            userModel.selectedUser = data.length != 0 ? data[0]: undefined;   
+            userModel.selectedUser = data.length != 0 ? data[0]: undefined;  
+            // userModel.selectedUser.agency = data.length != 0 ? data[0].agencyId: undefined;
         }).error(function(data) {
             userModel.errorObj = data;
         })
@@ -89,6 +97,7 @@ app.controller("UserCtrl", function($scope, $http){
     $scope.editUser = function(user) {
         viewUser(user);
         userModel.editMode = true;
+        userModel.viewMode = false;
         userModel.showPassword = false;
     }
 
@@ -233,6 +242,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
     $scope.challengeAreaModel = challengeAreaModel;
 
     var init = function(){
+        $scope.showSpecificChallengeArea = false;
         challengeAreaModel.challengeAreaName = null;
         challengeAreaModel.editMode = false;
         challengeAreaModel.create = false;
@@ -299,6 +309,11 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
             userModel.errorObj = data;
         })
     }
+
+    $scope.viewChallengeArea = function(challengeArea) {
+        $scope.showSpecificChallengeArea = true;
+        challengeAreaModel.challengeArea = challengeArea.id;
+    };
 
     init();
 })

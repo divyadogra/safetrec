@@ -20,11 +20,7 @@
 <body >
 <div class="container" ng-controller="MainCtrl"> 
 <div class="wrapper">
-       <img src="../img/shsp-logo.gif" align="right" width="120" height="50" class="img-responsive" alt="Responsive image">
-       <br/>
-       <br/>
-       <br/>
-       <br/>
+		<h1 style="color:#000066; display:inline-block; font-family:verdana; font-style:bold; font-size=400" width="120"><b>OnTRACK</b></h1> <img src="../img/shsp-logo.gif" align="right" width="120" height="50" class="img-responsive" alt="Responsive image">
        <h5 align="right">
 			<a id="Logout" name="Logout" align="right" ng-click="logout()">Logout</a>
 		</h5>

@@ -8,7 +8,8 @@
 		],
 		"settings": {
         "xdebug": {
-             "url": "http://localhost/safetrec/template/loginsuccess.php",
+             // "url": "http://localhost/safetrec/template/loginsuccess.php",
+             "url": "http://localhost/safetrec/template/login.php",
         }
     }
 	

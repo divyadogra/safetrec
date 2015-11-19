@@ -8,14 +8,14 @@ app.controller("LoginCtrl",function($scope,$http, $window){
     $scope.login = function() {
     	
     	$http({
-    		url:'php/login.php',
+    		url:'../php/login.php',
     		method: 'POST',
     		data: {email: loginObj.email, password: loginObj.password},
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     		
     	}).success(function(results){
             // console.log(results);
-    		$window.location.href = "loginsuccess.php";
+    		$window.location.href = "template/loginsuccess.php";
         }).error(function(results){
             $scope.error = true;
         });

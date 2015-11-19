@@ -40,7 +40,9 @@ function viewUsers() {
 function viewUser($userId) {
       try{
 
-            $query = "select id, first_name as firstName, last_name as lastName, email, fax, role, phone, agency_id as agencyId, division_id as divisionId from user where id=".$userId;         
+            $query = "select us.id, us.first_name as firstName, us.last_name as lastName, us.email,
+             us.fax, us.role, us.phone, us.agency_id as agencyId, us.division_id as divisionId, 
+             ag.name as agency from user as us, agency as ag where us.agency_id = ag.id and us.id=".$userId;          
             $results = executeQuery($query);
             $response = json_encode($results);
             echo $response;

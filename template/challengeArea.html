@@ -1,8 +1,9 @@
 <div>
-	<h3 vertical-align="middle">Challenge Areas</h3>
+<div ng-if="!showSpecificChallengeArea">
+<h3 vertical-align="middle">Challenge Areas</h3>
 	<button class="btn btn-primary" ng-click="createNewChallengeArea()">Create New Challenge Area</button>
-</div>
-<div ng-show="challengeAreaModel.create">
+	<br>
+	<div ng-show="challengeAreaModel.create">
 	<br/>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -28,10 +29,10 @@
 			</form>
 		</div>
 	</div>
-</div>	
-<br/>
-<label ng-hide="challengeAreaModel.challengeAreas">No Challenge Area Added yet</label>
-<div id="dvData" class="table-responsive" ng-show="challengeAreaModel.challengeAreas">
+	</div>	
+	<br/>
+	<label ng-hide="challengeAreaModel.challengeAreas">No Challenge Area Added yet</label>
+	<div id="dvData" class="table-responsive" ng-show="challengeAreaModel.challengeAreas">
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<table id="testTable" class="table">
@@ -49,7 +50,7 @@
 				<tr>
 					
 					<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
-						{{challengeArea.name}}
+						<a href="" ng-click="viewChallengeArea(challengeArea)">{{challengeArea.name}}</a>
 					</td>
 					<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
 						{{challengeArea.leader1LastName}}, {{challengeArea.leader1FirstName}}
@@ -61,18 +62,12 @@
 						<input class="form-control" type="text" ng-model="challengeArea.name"/>
 					</td>
 					<td ng-show="challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id">
-						<select class="form-control" required
-						ng-model="challengeAreaModel.leader1" name="leader1" id="leader1">
-						<option ng-repeat="leader in challengeAreaModel.leaders" value="{{leader.id}}">
-							{{leader.lastName}}, {{leader.firstName}}</option>
-						</select>
+						<select class="form-control" ng-model="challengeAreaModel.leader1" 
+						ng-options="leader.id as leader.lastName + ', ' + leader.firstName for leader in challengeAreaModel.leaders">
 					</td>
 					<td ng-show="challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id">
-						<select class="form-control" required
-						ng-model="challengeAreaModel.leader2" name="leader2" id="leader2">
-						<option ng-repeat="leader in challengeAreaModel.leaders" value="{{leader.id}}">
-							{{leader.lastName}}, {{leader.firstName}}</option>
-						</select>
+						<select class="form-control" ng-model="challengeAreaModel.leader2" 
+						ng-options="leader.id as leader.lastName + ', ' + leader.firstName for leader in challengeAreaModel.leaders">
 					</td>
 
 
@@ -99,5 +94,22 @@
 			</table>
 		</div>
 	</div>
+	</div>
 </div>
+<div ng-if="showSpecificChallengeArea">
+	<div class="form-inline">
+		<label class="control-label" for="challengeArea">Challenge Area:</label> 
+		<select class="form-control" name="challengeArea" id="challengeArea" ng-model="challengeAreaModel.challengeArea" ng-change="getActions(challengeAreaModel.challengeArea)" ng-options="challengeArea.id as challengeArea.name for challengeArea in challengeAreaModel.challengeAreas">
+			<option value="">Choose One</option>
+		</select>
+		<button ng-click="cancel()">Back</button>
+	
+	</div>
+	<div>
+	<h4>Strategy 1</h4>
+		<label>Action1</label><br>
+	<h4>Strategy 2</h4>
+		<label>Action2</label>
+	</div>
+</div> 
 </div>
