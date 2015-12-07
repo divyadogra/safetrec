@@ -99,17 +99,33 @@
 <div ng-if="showSpecificChallengeArea">
 	<div class="form-inline">
 		<label class="control-label" for="challengeArea">Challenge Area:</label> 
-		<select class="form-control" name="challengeArea" id="challengeArea" ng-model="challengeAreaModel.challengeArea" ng-change="getActions(challengeAreaModel.challengeArea)" ng-options="challengeArea.id as challengeArea.name for challengeArea in challengeAreaModel.challengeAreas">
+		<select class="form-control" name="challengeArea" id="challengeArea" ng-model="challengeAreaModel.challengeArea" ng-change="viewActions(challengeAreaModel.challengeArea)" ng-options="challengeArea.id as challengeArea.name for challengeArea in challengeAreaModel.challengeAreas">
 			<option value="">Choose One</option>
 		</select>
 		<button ng-click="cancel()">Back</button>
 	
 	</div>
-	<div>
-	<h4>Strategy 1</h4>
-		<label>Action1</label><br>
-	<h4>Strategy 2</h4>
-		<label>Action2</label>
-	</div>
+	<div ng-repeat="strategy in challengeAreaModel.strategies">
+	<h5>strategy.name</h5>
+	<table id="actionTable" class="table">
+				<thead>
+					<tr>
+						<th>Action Description</th>
+						<th>Action Lead</th>
+						<th>Lead Agency</th>
+						<th>Action Status</th>
+					</tr>
+				</thead>
+				<tbody
+					ng-repeat="action in strategy.actions">
+				<tr>
+					<td><a href="" ng-click="viewChallengeArea(challengeArea)">{{action.description}}</a></td>
+					<td>{{action.leaderLastName}}, {{action.leaderFirstName}}</td>
+					<td>{{action.agency}}</td>
+					<td>{{action.status}}</td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
 </div> 
 </div>

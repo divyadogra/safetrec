@@ -1,14 +1,13 @@
 <!doctype html>
 <html ng-app="shspApp">
 <head>
-<title>My Login</title>
+<title>SHSP Tracking Tool</title>
 <style type="text/css">
     body{padding-top:20px;}
 	h1   {color:#DF7401}
 	.form-inline > * {
    margin:7px;
 }
-</style>
 </style>
 <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="../css/safetrec.css" rel="stylesheet">
@@ -20,7 +19,9 @@
 <body >
 <div class="container" ng-controller="MainCtrl"> 
 <div class="wrapper">
-		<h1 style="color:#000066; display:inline-block; font-family:verdana; font-style:bold; font-size=400" width="120"><b>OnTRACK</b></h1> <img src="../img/shsp-logo.gif" align="right" width="120" height="50" class="img-responsive" alt="Responsive image">
+		<img src="../img/SHSP-background.jpg" width="100%"> 
+		<!-- <h1 style="color:#000066; display:inline-block; font-family:verdana; font-style:bold; font-size=400" width="120"><b>OnTRACK</b></h1> -->
+		<!--  <img src="../img/shsp-logo.gif" align="right" width="120" height="50" class="img-responsive" alt="Responsive image"> -->
        <h5 align="right">
 			<a id="Logout" name="Logout" align="right" ng-click="logout()">Logout</a>
 		</h5>

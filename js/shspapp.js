@@ -315,5 +315,13 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
         challengeAreaModel.challengeArea = challengeArea.id;
     };
 
+    $scope.viewActions = function(challengeArea) {
+        $http.get("../php/action.php", {params: {challengeId: challengeArea}}).success(function(data) {
+            challengeAreaModel.strategies = data.length != 0 ? data: undefined;   
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+    }
+
     init();
 })

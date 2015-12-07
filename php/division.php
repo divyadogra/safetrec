@@ -20,7 +20,7 @@ try {
 function viewDivisions($agencyId) {
       try{
 
-              $query = "select id, name, description from division where agency_id =".$agencyId;         
+            $query = "select id, name, description from division where agency_id =".$agencyId;         
             $results = executeQuery($query);
 
             $response = json_encode($results);
