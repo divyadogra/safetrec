@@ -19,9 +19,7 @@
 <body >
 <div class="container" ng-controller="MainCtrl"> 
 <div class="wrapper">
-		<img src="../img/SHSP-background.jpg" width="100%"> 
-		<!-- <h1 style="color:#000066; display:inline-block; font-family:verdana; font-style:bold; font-size=400" width="120"><b>OnTRACK</b></h1> -->
-		<!--  <img src="../img/shsp-logo.gif" align="right" width="120" height="50" class="img-responsive" alt="Responsive image"> -->
+		<img src="../img/SHSP-background.jpg" width="100%", height="150"> 
        <h5 align="right">
 			<a id="Logout" name="Logout" align="right" ng-click="logout()">Logout</a>
 		</h5>
@@ -43,7 +41,7 @@
 			<a href="#documents" aria-controls="documents" role="tab" data-toggle="tab" ng-click="listDocuments()"> Documents
 			</a>
 		</li>
-		<li class="dropdown"><a class="dropdown-toggle"
+		<li class="dropdown"><a class="dropdown-toggle" 
 			data-toggle="dropdown"> Admin <span class="caret"></span>
 		</a>
 			<ul class="dropdown-menu" role="menu">

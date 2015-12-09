@@ -245,6 +245,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
         $scope.showSpecificChallengeArea = false;
         challengeAreaModel.challengeAreaName = null;
         challengeAreaModel.editMode = false;
+        challengeAreaModel.editStrategy = false;
         challengeAreaModel.create = false;
         $http.get("../php/challengeArea.php").success(function(data) {
             challengeAreaModel.challengeAreas = data.length != 0 ? data: undefined;   
@@ -311,16 +312,61 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
     }
 
     $scope.viewChallengeArea = function(challengeArea) {
+        $scope.showSpecificAction = false;
         $scope.showSpecificChallengeArea = true;
-        challengeAreaModel.challengeArea = challengeArea.id;
+        challengeAreaModel.challengeArea = challengeArea;
+        challengeAreaModel.challengeAreaId = challengeArea.id;
+        $scope.viewActions(challengeArea.id);
     };
 
-    $scope.viewActions = function(challengeArea) {
-        $http.get("../php/action.php", {params: {challengeId: challengeArea}}).success(function(data) {
+    $scope.viewActions = function(challengeAreaId) {
+        $http.get("../php/action.php", {params: {challengeId: challengeAreaId}}).success(function(data) {
             challengeAreaModel.strategies = data.length != 0 ? data: undefined;   
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })
+    }
+
+    $scope.viewAction = function(action) {
+        $scope.showSpecificAction = true;
+        $scope.challengeAreaModel.action = action;
+    }
+
+    $scope.editStrategy = function(strategy) {
+         challengeAreaModel.strategy = strategy;
+         challengeAreaModel.editStrategy = true;
+    }
+
+    $scope.cancelEditStrategy = function() {
+         challengeAreaModel.editStrategy = false;
+    }
+
+    $scope.saveStrategy = function() {
+          $http.put("../php/action.php", {name: challengeAreaModel.strategy.name,
+                 description:challengeAreaModel.strategy.description, challengeId: challengeAreaModel.challengeArea.id}).success(function(data) {
+          
+            $scope.viewActions(challengeAreaModel.challengeArea.id); 
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+    }
+
+     $scope.createStrategy = function() {
+          $http.post("../php/action.php", {name: challengeAreaModel.newStrategy.name, description:challengeAreaModel.newStrategy.description,
+           challengeId: challengeAreaModel.challengeArea.id}).success(function(data) {
+            $scope.viewActions(challengeAreaModel.challengeArea.id); 
+            challengeAreaModel.createStrategy = false;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.createNewStrategy = function() {
+          challengeAreaModel.createStrategy = true;
+    }
+
+    $scope.cancelCreateStrategy = function() {
+          challengeAreaModel.createStrategy = false;
     }
 
     init();

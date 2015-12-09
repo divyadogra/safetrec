@@ -7,11 +7,11 @@ try {
       if ($request_type == 'GET') {
             viewActions($_GET['challengeId']);
       } else if ($request_type == 'POST') {
-            createChallengeArea();
+            createStrategy();
       } else if ($request_type == 'PUT') {
-            updateChallengeArea();
+            updateStrategy();
       } else if ($request_type == 'DELETE') {
-            deleteChallengeArea();
+            deleteStrategy();
       }
 } catch (Exception $e) {
  $response = $e->getMessage();
@@ -23,12 +23,12 @@ function viewActions($challengeId) {
             $query = "select id, name, description from strategy where challenge_id =".$challengeId;               
             $results = executeQuery($query);
 
-            for(i=0; i<$results.length; i++) {
+            for($i=0, $c = count($results); $i < $c; $i++) {
               $query = "select action.id, action.description, user.last_name as leaderLastName, 
-                        user.first_name as leaderFirstName, agency.name, ac_com.comment
-                        from action, user, agency, action_comment as ac_com                                                               where action.leader_id = user.id and action.agency_id = agency.id and action_comment.action_id = action.id and action.strategy_id=".$results[i].id;
+                        user.first_name as leaderFirstName, agency.name as agencyName
+                        from action, user, agency where action.lead_id = user.id and action.agency_id = agency.id and action.strategy_id=".$results[$i]['id'];
               $actionResults = executeQuery($query);        
-              $results[i].actions = $actionResults;
+              $results[$i]['actions'] = $actionResults;
 
             }
 
@@ -49,7 +49,7 @@ function createStrategy() {
             $description = $request->description;
             $challenge_id = $request->challengeId;
             
-            $query = sprintf("insert into strategy(name, description, challenge_id) values ('%s', %s, %d)", $name, $description, $challenge_id);         
+            $query = sprintf("insert into strategy(name, description, challenge_id) values ('%s', '%s', %d)", $name, $description, $challenge_id);         
             $results = executeQuery($query);
 
             // TODO
@@ -68,7 +68,7 @@ function updateStrategy() {
             $id = $request->id;
             $description = $request->description;
 
-            $query = sprintf("update strategy set name='%s', description=%d where id=%d", $name, $description, $id);         
+            $query = sprintf("update strategy set name='%s', description='%s' where id=%d", $name, $description, $id);         
             $results = executeQuery($query);
 
                   // TODO
@@ -138,7 +138,7 @@ function deleteAction() {
       try{
             $id = $_GET['id'];
 
-            $query = sprintf("delete from action where id=%d", $id);         
+            $query = sprintf("delete from challenge_area where id=%d", $id);         
             $results = executeQuery($query);
 
                   // TODO
