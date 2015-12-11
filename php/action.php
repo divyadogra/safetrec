@@ -25,7 +25,7 @@ function viewActions($challengeId) {
 
             for($i=0, $c = count($results); $i < $c; $i++) {
               $query = "select action.id, action.description, user.last_name as leaderLastName, 
-                        user.first_name as leaderFirstName, agency.name as agencyName
+                        user.first_name as leaderFirstName, agency.name as agencyName, action.status as actionStatus
                         from action, user, agency where action.lead_id = user.id and action.agency_id = agency.id and action.strategy_id=".$results[$i]['id'];
               $actionResults = executeQuery($query);        
               $results[$i]['actions'] = $actionResults;

@@ -176,3 +176,41 @@ CREATE TABLE safetrec.action_outcome_comment (
     REFERENCES safetrec.action_outcome (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
+
+#insert agency data
+select * from agency;
+insert into agency values(1, 'ABC', 'Alcoholic Beverage Control');
+insert into agency values(2, 'Alameda Co.', 'Alameda County');
+insert into agency values(3, 'Anaheim', 'City of Anaheim');
+insert into agency values(4, 'ATSSA', 'American Traffic Safety Services Association');
+insert into agency values(5, 'BTH', 'California Business, Transportation, and Housing Agency');
+insert into agency values(6, 'Butte Co.', 'Butte County');
+insert into agency values(7, 'CABO', 'California Association of Bicycling Organizations');
+insert into agency values(8, 'Caltrans', 'California Department of Transportation');
+insert into agency values(9, 'CDPH', 'California Department of Public Health');
+insert into agency values(10, 'CHP', 'California Highway Patrol');
+insert into agency values(11, 'CLC', 'California League of Cities');
+insert into agency values(12, 'CPCA', "California Police Chief's Association");
+insert into agency values(13, 'CS', 'Cambridge Systematics, Inc.');
+insert into agency values(14, 'CSAC', 'California State Association of Counties');
+insert into agency values(15, 'DMV', 'Department of Motor Vehicles');
+insert into agency values(16, 'DSAC', 'Driving School Association of California, Inc.');
+insert into agency values(17, 'EMSA', 'Emergency Medical Services Authority');
+insert into agency values(18, 'FHWA', 'Federal Highway Administration');
+insert into agency values(19, 'FRA', 'Federal Railroad Administration');
+insert into agency values(20, 'LA DPH', 'LA County Dept. of Public Health');
+insert into agency values(21, 'MTC/RTPA', 'Metropolitan Transportation Commission / Regional Transportation Planning Agency');
+insert into agency values(22, 'Nevada Co.', 'Nevada County');
+insert into agency values(23, 'OTS', 'Office of Traffic Safety');
+insert into agency values(24, 'SafeTREC', 'SafeTREC, UC Berkeley');
+insert into agency values(25, 'Santa Rosa', 'City of Santa Rosa');
+insert into agency values(26, 'SCAG', 'Nevada County');
+insert into agency values(27, 'Nevada Co.', 'Southern California Association of Governments');
+insert into agency values(28, 'Tulare Co.', 'Tulare County');
+insert into agency values(29, 'UCD', 'UC-Davis Medical Center');
+insert into agency values(30, 'WS', 'Walk Sacramento');
+
+
+
+
+

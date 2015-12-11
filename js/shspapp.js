@@ -352,7 +352,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
     }
 
      $scope.createStrategy = function() {
-          $http.post("../php/action.php", {name: challengeAreaModel.newStrategy.name, description:challengeAreaModel.newStrategy.description,
+        $http.post("../php/action.php", {name: challengeAreaModel.newStrategy.name, description:challengeAreaModel.newStrategy.description,
            challengeId: challengeAreaModel.challengeArea.id}).success(function(data) {
             $scope.viewActions(challengeAreaModel.challengeArea.id); 
             challengeAreaModel.createStrategy = false;
@@ -368,6 +368,21 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
     $scope.cancelCreateStrategy = function() {
           challengeAreaModel.createStrategy = false;
     }
+
+    $scope.createNewAction = function(strategy) {
+        challengeAreaModel.createAction = true;
+        challengeAreaModel.strategy = strategy;
+    }
+
+    // $scope.createAction = function() {
+    //      $http.post("../php/action.php", {name: challengeAreaModel.newStrategy.name, description:challengeAreaModel.newStrategy.description,
+    //        challengeId: challengeAreaModel.challengeArea.id}).success(function(data) {
+    //         $scope.viewActions(challengeAreaModel.challengeArea.id); 
+    //         challengeAreaModel.createStrategy = false;
+    //     }).error(function(data) {
+    //         challengeAreaModel.errorObj = data;
+    //     })
+    // }
 
     init();
 })

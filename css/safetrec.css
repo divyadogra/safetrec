@@ -18,6 +18,16 @@
     display: block;
 }
 
+.box-legion {   
+    display:inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0,0,0,.2);
+}
+
 .test {
 	background-color: #191975 !important;
 }
