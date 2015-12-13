@@ -1,13 +1,14 @@
 <?php
 
 function executeQuery($query) {
-    $servername = "localhost";
+    $servername = "localhost;3306";
     $username = "divya";
     $password = "password";
+    // $port = "3300";
     $dbname = "safetrec";
     try {
         
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+        $conn = new PDO("mysql:host=$servername;port=;dbname=$dbname", $username, $password);
         // set the PDO error mode to exception
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $stmt = $conn->prepare($query); 
