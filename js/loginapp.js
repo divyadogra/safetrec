@@ -6,9 +6,18 @@ app.controller("LoginCtrl",function($scope,$http, $window){
     $scope.loginObj = loginObj;
 	
     $scope.login = function() {
+
+        request = {email: loginObj.email,
+                    password: loginObj.password}
+
+        $http.post("../php/doLogin.php", request).success(function(data) {
+                $window.location.href = "loginsuccess.php";
+            }).error(function(data) {
+                $scope.error = true;
+            })
     	
-    	$http({
-    		url:'../php/login.php',
+    	/*$http({
+    		url:'../php/doLogin.php',
     		method: 'POST',
     		data: {email: loginObj.email, password: loginObj.password},
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -18,6 +27,6 @@ app.controller("LoginCtrl",function($scope,$http, $window){
     		$window.location.href = "template/loginsuccess.php";
         }).error(function(results){
             $scope.error = true;
-        });
+        });*/
     }
 });

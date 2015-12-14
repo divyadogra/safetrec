@@ -1,4 +1,9 @@
-app = angular.module('shspApp', []);
+var underscore = angular.module('underscore', []);
+underscore.factory('_', ['$window', function($window) {
+  return $window._; // assumes underscore has already been loaded on the page
+}]);
+
+app = angular.module('shspApp', ['underscore']);
 app.controller("MainCtrl",function($scope,$http, $window){
 
     var user = {};
@@ -15,8 +20,30 @@ app.controller("MainCtrl",function($scope,$http, $window){
     }
 
     $scope.logout = function() {
-    	$window.location.href = "login.php";
+        var myURL = '../php/logout.php';
+        $http.get(myURL).then(function (data) {
+           $window.location.href = "login.php"; 
+        });
+    	
     }
+
+    $scope.isUserLoggedIn = function() {
+        var myURL = '../php/validate.php';
+        $http.get(myURL).success(function (data) {
+            $scope.loggedInUser = data;
+        }).error(function(data) {
+            if (data == 'Invalid Login') {
+                $window.location.href = "login.php";
+            }
+            
+        });
+    }
+
+    $scope.isAdmin = function() {
+        return $scope.loggedInUser.role == 'Admin';
+    }
+
+    $scope.isUserLoggedIn();
 });
 
 app.controller("UserCtrl", function($scope, $http){
@@ -237,7 +264,7 @@ app.controller("DivisionCtrl", function($scope, $http){
     init();
 })
 
-app.controller("ChallengeAreaCtrl", function($scope, $http){
+app.controller("ChallengeAreaCtrl", function($scope, $http, _){
     var challengeAreaModel = {};
     $scope.challengeAreaModel = challengeAreaModel;
 
@@ -257,6 +284,26 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         });
+        $http.get("../php/agency.php").success(function(data) {
+            challengeAreaModel.agencies = data;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        });
+    }
+
+    $scope.isChallengeAreaLead = function (){
+        if (challengeAreaModel.challengeArea.leader1_id == $scope.loggedInUser.id
+                || challengeAreaModel.challengeArea.leader2_id == $scope.loggedInUser.id) {
+            return true;
+        }
+    }
+
+    $scope.getDivisions = function(agencyId) {
+         $http.get("../php/division.php", {params: {agencyId: agencyId}}).success(function(data) {
+            challengeAreaModel.divisions = data.length != 0 ? data: undefined;   
+        }).error(function(data) {
+            userModel.errorObj = data;
+        })
     }
 
     $scope.editChallengeArea = function(challengeArea) {
@@ -322,14 +369,16 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
     $scope.viewActions = function(challengeAreaId) {
         $http.get("../php/action.php", {params: {challengeId: challengeAreaId}}).success(function(data) {
             challengeAreaModel.strategies = data.length != 0 ? data: undefined;   
+            challengeAreaModel.challengeArea = _.findWhere(challengeAreaModel.challengeAreas, {id:challengeAreaId});
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })
     }
 
-    $scope.viewAction = function(action) {
+    $scope.viewAction = function(action, strategy) {
         $scope.showSpecificAction = true;
         $scope.challengeAreaModel.action = action;
+        $scope.challengeAreaModel.selectedStrategy = strategy;
     }
 
     $scope.editStrategy = function(strategy) {
@@ -342,7 +391,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
     }
 
     $scope.saveStrategy = function() {
-          $http.put("../php/action.php", {name: challengeAreaModel.strategy.name,
+          $http.put("../php/strategy.php", {name: challengeAreaModel.strategy.name,
                  description:challengeAreaModel.strategy.description, challengeId: challengeAreaModel.challengeArea.id}).success(function(data) {
           
             $scope.viewActions(challengeAreaModel.challengeArea.id); 
@@ -352,7 +401,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
     }
 
      $scope.createStrategy = function() {
-        $http.post("../php/action.php", {name: challengeAreaModel.newStrategy.name, description:challengeAreaModel.newStrategy.description,
+        $http.post("../php/strategy.php", {name: challengeAreaModel.newStrategy.name, description:challengeAreaModel.newStrategy.description,
            challengeId: challengeAreaModel.challengeArea.id}).success(function(data) {
             $scope.viewActions(challengeAreaModel.challengeArea.id); 
             challengeAreaModel.createStrategy = false;
@@ -369,20 +418,72 @@ app.controller("ChallengeAreaCtrl", function($scope, $http){
           challengeAreaModel.createStrategy = false;
     }
 
-    $scope.createNewAction = function(strategy) {
+    $scope.createAction = function(strategy) {
         challengeAreaModel.createAction = true;
         challengeAreaModel.strategy = strategy;
     }
 
-    // $scope.createAction = function() {
-    //      $http.post("../php/action.php", {name: challengeAreaModel.newStrategy.name, description:challengeAreaModel.newStrategy.description,
-    //        challengeId: challengeAreaModel.challengeArea.id}).success(function(data) {
-    //         $scope.viewActions(challengeAreaModel.challengeArea.id); 
-    //         challengeAreaModel.createStrategy = false;
-    //     }).error(function(data) {
-    //         challengeAreaModel.errorObj = data;
-    //     })
-    // }
+    $scope.editAction = function() {
+        challengeAreaModel.editAction = true;
+    }
+
+    $scope.createNewAction = function() {
+
+        request = {strategyId: challengeAreaModel.strategy.id,
+                    description: challengeAreaModel.newAction.description, 
+                    status: challengeAreaModel.newAction.status,
+                    leadId: challengeAreaModel.newAction.actionLead,
+                    agencyId: challengeAreaModel.newAction.agency,
+                    divisionId: challengeAreaModel.newAction.division,
+                    startDate: challengeAreaModel.newAction.startDate,
+                    endDate: challengeAreaModel.newAction.endDate,
+                    timing: challengeAreaModel.newAction.timing,
+                    dataInfoProbId: challengeAreaModel.newAction.dataInfoProbId,
+                    provenCountermeasure: challengeAreaModel.newAction.provenCountermeasure,
+                    planEval: challengeAreaModel.newAction.planEval,
+                    resources: challengeAreaModel.newAction.resources,
+                    scopeReach: challengeAreaModel.newAction.scopeReach,
+                    legislative: challengeAreaModel.newAction.legislative
+                    }
+         $http.post("../php/action.php", request).success(function(data) {
+            $scope.viewActions(challengeAreaModel.challengeArea.id); 
+            challengeAreaModel.createAction = false;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.cancelNewAction = function() {
+        challengeAreaModel.createAction = false;
+    }
+
+    $scope.editAndSaveAction = function() {
+
+        request = { id: challengeAreaModel.action.id,
+                    strategyId: challengeAreaModel.selectedStrategy.id,
+                    description: challengeAreaModel.action.description, 
+                    status: challengeAreaModel.action.status,
+                    leadId: challengeAreaModel.action.leadId,
+                    agencyId: challengeAreaModel.action.agencyId,
+                    divisionId: challengeAreaModel.action.divisionId,
+                    startDate: challengeAreaModel.action.startDate,
+                    endDate: challengeAreaModel.action.endDate,
+                    timing: challengeAreaModel.action.timing,
+                    dataInfoProbId: challengeAreaModel.action.dataInfoProbId,
+                    provenCountermeasure: challengeAreaModel.action.provenCountermeasure,
+                    planEval: challengeAreaModel.action.planEval,
+                    resources: challengeAreaModel.action.resources,
+                    scopeReach: challengeAreaModel.action.scopeReach,
+                    legislative: challengeAreaModel.action.legislative
+                    }
+         $http.put("../php/action.php", request).success(function(data) {
+            $scope.viewActions(challengeAreaModel.challengeArea.id); 
+            challengeAreaModel.editAction = false;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+    }
+
 
     init();
 })

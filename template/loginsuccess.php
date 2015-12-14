@@ -14,6 +14,7 @@
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="../js/angular.js"></script>
 <script src="../js/bootstrap.js"></script>	
+<script src="../js/underscore.js"></script>
 <script src="../js/shspapp.js"></script>
 </head>
 <body >
@@ -41,7 +42,7 @@
 			<a href="#documents" aria-controls="documents" role="tab" data-toggle="tab" ng-click="listDocuments()"> Documents
 			</a>
 		</li>
-		<li class="dropdown"><a class="dropdown-toggle" 
+		<li class="dropdown" ng-show="loggedInUser.role == 'Admin'"><a class="dropdown-toggle" 
 			data-toggle="dropdown"> Admin <span class="caret"></span>
 		</a>
 			<ul class="dropdown-menu" role="menu">

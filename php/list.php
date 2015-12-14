@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['loggedInUser'])) {
+        throw new Exception("Invalid Login");
+      }  
+
 $url = "https://api.box.com/2.0/folders/0";
 
 $servername = "localhost";
@@ -24,6 +29,7 @@ try {
     $conn = null;
 
 } catch(PDOException $e) {
+    http_response_code(401);
     echo "Connection failed: " . $e->getMessage();
 }
 

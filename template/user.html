@@ -35,13 +35,13 @@
 							<div class="form-group has-feedback">
 								<!-- ng-class="{'has-error': form1.email.$invalid, 'has-success': !form1.email.$invalid}" -->
 								<label>Agency:</label>
-								<select class="form-control" ng-model="userModel.selectedUser.agencyId" 
-								ng-options="agency.id as agency.name for agency in userModel.agencies">
-								<!--  <select class="form-control" required
-									ng-model="userModel.selectedUser.agency" name="agency" id="agency" ng-change="getDivisions(userModel.selectedUser.agency)">
+								<!-- <select class="form-control" ng-model="userModel.selectedUser.agencyId" 
+								ng-options="agency.id as agency.name for agency in userModel.agencies"> -->
+								<select class="form-control" required
+									ng-model="userModel.selectedUser.agencyId" name="agency" id="agency" ng-change="getDivisions(userModel.selectedUser.agencyId)">
 									<option ng-repeat="agency in userModel.agencies" value="{{agency.id}}">
 									{{agency.name}}</option>
-								</select> -->
+								</select>
 							</div>
 
 							<div class="form-group has-feedback" ng-show="userModel.divisions">

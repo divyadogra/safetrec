@@ -2,6 +2,10 @@
 include "dbConnect.php";
 
 try {
+      session_start();
+      if (!isset($_SESSION['loggedInUser'])) {
+        throw new Exception("Invalid Login");
+      } 
 
       $request_type = $_SERVER['REQUEST_METHOD'];
       if ($request_type == 'GET') {
@@ -14,7 +18,11 @@ try {
             deleteChallengeArea();
       }
 } catch (Exception $e) {
- $response = $e->getMessage();
+  $response = $e->getMessage();
+ if ($response == 'Invalid Login') {
+  http_response_code(401);
+ }
+ echo $response;
 }
 
 function viewChallengeAreas() {

@@ -1,7 +1,9 @@
 <?php
 include "dbConnect.php";
 try{
-	 		
+	 		if (!isset($_SESSION['loggedInUser'])) {
+        throw new Exception("Invalid Login");
+      }   
             $query = "select id as userId, firstName, lastName, email, phone, fax, role from user";         
 
             $results = executeQuery($query);
@@ -16,6 +18,7 @@ try{
             // }
 
 	} catch (Exception $e) {
+    http_response_code(401);
              $response = $e->getMessage();
     }
 ?>

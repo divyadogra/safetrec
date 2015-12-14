@@ -1,5 +1,10 @@
 <?php
 try {
+            session_start();
+            if (!isset($_SESSION['loggedInUser'])) {
+                  throw new Exception("Invalid Login");
+            }  
+
             $postdata = file_get_contents("php://input");
             $request = json_decode($postdata);
             @$fileId = $request->id;
@@ -52,6 +57,7 @@ try {
             // curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
            
         } catch (Exception $e) {
+            http_response_code(401);
              $response = $e->getMessage();
         }
 ?>

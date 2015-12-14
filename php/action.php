@@ -3,18 +3,28 @@ include "dbConnect.php";
 
 try {
 
-      $request_type = $_SERVER['REQUEST_METHOD'];
+      session_start();
+      if (!isset($_SESSION['loggedInUser'])) {
+        throw new Exception("Invalid Login");
+      } 
+
+      $request_type = $_SERVER['REQUEST_METHOD']; 
+
       if ($request_type == 'GET') {
             viewActions($_GET['challengeId']);
       } else if ($request_type == 'POST') {
-            createStrategy();
+            createAction();
       } else if ($request_type == 'PUT') {
-            updateStrategy();
+            updateAction();
       } else if ($request_type == 'DELETE') {
-            deleteStrategy();
+            deleteAction();
       }
 } catch (Exception $e) {
- $response = $e->getMessage();
+  $response = $e->getMessage();
+ if ($response == 'Invalid Login') {
+  http_response_code(401);
+ }
+ echo $response;
 }
 
 function viewActions($challengeId) {
@@ -24,8 +34,9 @@ function viewActions($challengeId) {
             $results = executeQuery($query);
 
             for($i=0, $c = count($results); $i < $c; $i++) {
-              $query = "select action.id, action.description, user.last_name as leaderLastName, action.end_date as endDate,
-                        user.first_name as leaderFirstName, agency.name as agencyName, action.status as actionStatus
+              $query = "select action.id, action.description, action.status, action.division_id as divisionId, action.lead_id as leadId, action.start_date as startDate, action.end_date as endDate, action.timing, action.data_info_prob_id as dataInfoProbId,
+                        action.proven_countermeasure as provenCountermeasure, action.plan_eval as planEval, action.resources, action.scope_reach as scopeReach, action.legislative, action.last_activity as lastActivity,
+                        user.last_name as leaderLastName, user.first_name as leaderFirstName, agency.name as agencyName, agency.id as agencyId
                         from action, user, agency where action.lead_id = user.id and action.agency_id = agency.id and action.strategy_id=".$results[$i]['id'];
               $actionResults = executeQuery($query);        
               $results[$i]['actions'] = $actionResults;
@@ -40,69 +51,33 @@ function viewActions($challengeId) {
       }
 }
 
-
-function createStrategy() {
-      try{
-            $postdata = file_get_contents("php://input");
-            $request = json_decode($postdata);
-            $name = $request->name;
-            $description = $request->description;
-            $challenge_id = $request->challengeId;
-            
-            $query = sprintf("insert into strategy(name, description, challenge_id) values ('%s', '%s', %d)", $name, $description, $challenge_id);         
-            $results = executeQuery($query);
-
-            // TODO
-            // check the results for success/ failure?
-
-      } catch (Exception $e) {
-       $response = $e->getMessage();
- }
-}
-
-function updateStrategy() {
-      try{
-            $putdata = file_get_contents("php://input");
-            $request = json_decode($putdata);
-            $name = $request->name;
-            $id = $request->id;
-            $description = $request->description;
-
-            $query = sprintf("update strategy set name='%s', description='%s' where id=%d", $name, $description, $id);         
-            $results = executeQuery($query);
-
-                  // TODO
-                  // check the results for success/ failure?
-
-      } catch (Exception $e) {
-           $response = $e->getMessage();
-     }
-}
-
-function deleteStrategy() {
-      try{
-            $id = $_GET['id'];
-
-            $query = sprintf("delete from strategy where id=%d", $id);         
-            $results = executeQuery($query);
-
-                  // TODO
-                  // check the results for success/ failure?
-
-      } catch (Exception $e) {
-           $response = $e->getMessage();
-     }
-}
-
 function createAction() {
       try{
             $postdata = file_get_contents("php://input");
             $request = json_decode($postdata);
-            $name = $request->name;
-            $leader1_id = $request->leader1;
-            $leader2_id = $request->leader2;
+            $strategyId = $request->strategyId;
+            $description = $request->description;
+            $status = $request->status;
+            $leadId = $request->leadId;
+            $agencyId = $request->agencyId;
+            $divisionId = $request->divisionId;
+            $startDate = $request->startDate;
+            $startDate = substr($startDate, 0, 10); 
+            $endDate = $request->endDate;
+            $endDate = substr($endDate, 0, 10); 
+            $timing = $request->timing;
+            $dataInfoProbId = $request->dataInfoProbId;
+            $provenCountermeasure = $request->provenCountermeasure;
+            $planEval = $request->planEval;
+            $resources = $request->resources;
+            $scopeReach = $request->scopeReach;
+            $legislative = $request->legislative; 
             
-            $query = sprintf("insert into challenge_area(name, leader1_id, leader2_id) values ('%s', %d, %d)", $name, $leader1_id, $leader2_id);         
+            $query = sprintf("insert into action(strategy_id, description, status, lead_id, agency_id, division_id, start_date, end_date, timing, data_info_prob_id, proven_countermeasure, plan_eval,resources, scope_reach, legislative, last_activity) values (%d, '%s', '%s', %d, %d, %d, '%s', '%s', '%s','%s', '%s', '%s','%s', '%s', '%s', now())", 
+                              $strategyId, $description, $status, $leadId, $agencyId, $divisionId, $startDate,
+                              $endDate, $timing, $dataInfoProbId, $provenCountermeasure, $planEval, $resources,
+                              $scopeReach, $legislative);   
+
             $results = executeQuery($query);
 
             // TODO
@@ -118,12 +93,32 @@ function updateAction() {
       try{
             $putdata = file_get_contents("php://input");
             $request = json_decode($putdata);
-            $name = $request->name;
             $id = $request->id;
-            $leader1_id = $request->leader1;
-            $leader2_id = $request->leader2; 
+            $strategyId = $request->strategyId;
+            $description = $request->description;
+            $status = $request->status;
+            $leadId = $request->leadId;
+            $agencyId = $request->agencyId;
+            $divisionId = $request->divisionId;
+            $startDate = $request->startDate; 
+            $startDate = substr($startDate, 0, 10); 
+            $endDate = $request->endDate;
+            $endDate = substr($endDate, 0, 10); 
+            $timing = $request->timing;
+            $dataInfoProbId = $request->dataInfoProbId;
+            $provenCountermeasure = $request->provenCountermeasure;
+            $planEval = $request->planEval;
+            $resources = $request->resources;
+            $scopeReach = $request->scopeReach;
+            $legislative = $request->legislative; 
 
-            $query = sprintf("update challenge_area set name='%s', leader1_id=%d, leader2_id=%d where id=%d", $name, $leader1_id, $leader2_id, $id);         
+            $query = sprintf("update action set strategy_id=%d, description='%s', 
+                                status='%s',lead_id=%d, agency_id=%d, division_id=%d, start_date='%s', end_date='%s',
+                                timing='%s', data_info_prob_id='%s', proven_countermeasure='%s', plan_eval='%s',
+                                resources='%s', scope_reach='%s', legislative='%s', last_activity=now() where id=%d",
+                                $strategyId, $description, $status, $leadId, $agencyId, $divisionId, $startDate,
+                                $endDate, $timing, $dataInfoProbId, $provenCountermeasure, $planEval, $resources,
+                                $scopeReach, $legislative, $id);         
             $results = executeQuery($query);
 
                   // TODO
@@ -138,7 +133,7 @@ function deleteAction() {
       try{
             $id = $_GET['id'];
 
-            $query = sprintf("delete from challenge_area where id=%d", $id);         
+            $query = sprintf("delete from action where id=%d", $id);         
             $results = executeQuery($query);
 
                   // TODO
@@ -148,8 +143,5 @@ function deleteAction() {
            $response = $e->getMessage();
      }
 }
-
-
-
 
 ?>
