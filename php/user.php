@@ -28,7 +28,7 @@ try {
 } catch (Exception $e) {
  $response = $e->getMessage();
  if ($response == 'Invalid Login') {
-  http_response_code(401);
+  header(':', true, 401);
  }
  echo $response;
 }
@@ -77,19 +77,19 @@ function createUser() {
             $cost = 10;
 
             // Create a random salt
-            $salt = strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+            // $salt = strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
             // echo json_encode($salt);
 
             // Prefix information about the hash so PHP knows how to verify it later.
             // "$2a$" Means we're using the Blowfish algorithm. The following two digits are the cost parameter.
-            $salt = sprintf("$2a$%02d$", $cost) . $salt;
+            // $salt = sprintf("$2a$%02d$", $cost) . $salt;
 
             // Hash the password with the salt
-            $hash = crypt($pass, $salt);
+            // $hash = crypt($pass, $salt);
             
             $query = sprintf("insert into user(first_name, last_name, email, password, phone, role, fax, last_activity, agency_id, division_id)
                  values ('%s','%s','%s','%s','%s','%s','%s', now(), %d, %d)",
-                 $firstName, $lastName, $email, $hash, $phone, $role, $fax, $agencyId, $divisionId);   
+                 $firstName, $lastName, $email, $pass, $phone, $role, $fax, $agencyId, $divisionId);   
 
             $results = executeQuery($query);
       } catch (Exception $e) {

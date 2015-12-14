@@ -11,7 +11,8 @@ try{
             
             $results = executeQuery($request);
             
-            if ($results[0]['password'] === crypt($pass, $results[0]['password'])) {
+            // if ($results[0]['password'] === crypt($pass, $results[0]['password'])) {
+            if ($results[0]['password'] === $pass) {
                 session_start();
                 $_SESSION['loggedInUser'] = $results[0];
             	echo "success";

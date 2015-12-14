@@ -22,7 +22,7 @@ try {
 } catch (Exception $e) {
   $response = $e->getMessage();
  if ($response == 'Invalid Login') {
-  http_response_code(401);
+    header(':', true, 401);
  }
  echo $response;
 }
