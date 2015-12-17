@@ -34,7 +34,7 @@ function viewActions($challengeId) {
             $results = executeQuery($query);
 
             for($i=0, $c = count($results); $i < $c; $i++) {
-              $query = "select action.id, action.description, action.status, action.division_id as divisionId, action.lead_id as leadId, action.start_date as startDate, action.end_date as endDate, action.timing, action.data_info_prob_id as dataInfoProbId,
+              $query = "select action.id, action.description, action.status, action.division_id as divisionId, action.lead_id as leadId, DATE_FORMAT(action.start_date, '%m/%d/%Y') as startDate, DATE_FORMAT(action.end_date, '%m/%d/%Y') as endDate, action.timing, action.data_info_prob_id as dataInfoProbId,
                         action.proven_countermeasure as provenCountermeasure, action.plan_eval as planEval, action.resources, action.scope_reach as scopeReach, action.legislative, action.last_activity as lastActivity,
                         user.last_name as leaderLastName, user.first_name as leaderFirstName, agency.name as agencyName, agency.id as agencyId
                         from action, user, agency where action.lead_id = user.id and action.agency_id = agency.id and action.strategy_id=".$results[$i]['id'];

@@ -2,8 +2,8 @@
 
 function executeQuery($query) {
     $servername = "localhost;3306";
-    $username = "root";
-    $password = "root";
+    $username = "divya";
+    $password = "password";
     // $port = "3300";
     $dbname = "safetrec";
     try {
