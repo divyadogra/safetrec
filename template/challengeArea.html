@@ -12,12 +12,12 @@
 				<div class="panel-body">
 					<form>
 						<label>Name</label><input type="text" class="form-control" ng-model="challengeAreaModel.challengeAreaName"/>
-						<label>Leader 1:</label> <select class="form-control" required
+						<label>Co-Lead:</label> <select class="form-control" required
 						ng-model="challengeAreaModel.leader1" name="leader1" id="leader1">
 						<option ng-repeat="leader in challengeAreaModel.leaders" value="{{leader.id}}">
 							{{leader.lastName}}, {{leader.firstName}}</option>
 						</select>
-						<label>Leader 2:</label> <select class="form-control" required
+						<label>Co-Lead:</label> <select class="form-control" required
 						ng-model="challengeAreaModel.leader2" name="leader2" id="leader2">
 						<option ng-repeat="leader in challengeAreaModel.leaders" value="{{leader.id}}">
 							{{leader.lastName}}, {{leader.firstName}}</option>
@@ -40,9 +40,8 @@
 							<tr>
 								<th>S.No.</th>
 								<th>Name</th>
-								<th>Leader 1</th>
-								<th>Leader 2</th>
-								<!-- TODO add leaders here -->
+								<th>Co-Lead</th>
+								<th>Co-Lead</th>
 								<th ng-show="loggedInUser.role == 'Admin'">Action</th>
 							</tr>
 						</thead>
@@ -104,15 +103,18 @@
 			<option value="">Choose One</option>
 		</select>
 	</div>
+	<div class="form-inline" ng-show="!challengeAreaModel.strategies">No Strategy Added</div>
 	<div class="form-inline">
+		<div ng-show="challengeAreaModel.strategies">
 		<label>Action Status Key:</label>
 		<div class="box-legion" style="background-color:#d9534f"></div>Not Started
 		<div class="box-legion" style="background-color:#f0ad4e"></div>Early Progress
-		<div class="box-legion" style="background-color:#FFFF00"></div>Underway
+		<div class="box-legion" style="background-color:#FFD700"></div>Underway
 		<div class="box-legion" style="background-color:#5bc0de"></div>Substantial Progress
 		<div class="box-legion" style="background-color:#5cb85c"></div>Completed
+		</div>
 		<div align="right">
-			<button class="btn btn-primary" ng-show="isAdmin() || isChallengeAreaLead()" ng-click="createNewStrategy()">Create New Strategy</button> 
+			<button class="btn btn-primary" ng-show="isAdmin()" ng-click="createNewStrategy()">Create New Strategy</button> 
 			<button class="btn btn-primary" ng-click="cancel()">Back</button>
 		</div>
 	</div>
@@ -126,8 +128,8 @@
 			<div class="panel-body">
 				<form>
 					<div ng-show="challengeAreaModel.createStrategy">
-						<label>Strategy Name:</label><input ng-model="challengeAreaModel.newStrategy.name" type="text">
-						<label>Strategy Description:</label><input ng-model="challengeAreaModel.newStrategy.description" type="text">
+						<label>Strategy Name:</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.newStrategy.name"/>
+						<label>Strategy Description:</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.newStrategy.description"/>
 						<button class="btn btn-primary" ng-click="createStrategy()">Save</button>
 						<button class="btn btn-primary" ng-click="cancelCreateStrategy()">Cancel</button></div>
 					</form>
@@ -140,13 +142,13 @@
 					<div ng-hide="challengeAreaModel.editStrategy && challengeAreaModel.strategy == strategy">
 						<h5 class="panel-title">Strategy#{{$index+1}}: {{strategy.name}}</h5>
 						{{strategy.description}}
-						<div align="right"> <button  class="btn btn-primary" align="right" ng-show="isAdmin() || isChallengeAreaLead()" ng-click="editStrategy(strategy)">Edit</button>
-							<button  class="btn btn-primary" align="right"  ng-show="isAdmin() || isChallengeAreaLead()" ng-click="createAction(strategy)">Create New Action</button>
+						<div align="right"> <button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="editStrategy(strategy)">Edit</button>
+							<button  class="btn btn-primary" align="right"  ng-show="isAdmin()" ng-click="createAction(strategy)">Create New Action</button>
 						</div>
 					</div>
 					<div ng-show="challengeAreaModel.editStrategy && challengeAreaModel.strategy == strategy">
-						<label>Strategy Name:</label><input ng-model="challengeAreaModel.strategy.name" type="text">
-						<label>Strategy Description:</label><input ng-model="challengeAreaModel.strategy.description" type="text">
+						<label>Strategy Name:</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.strategy.name"/>
+						<label>Strategy Description:</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.strategy.description"/>
 						<button class="btn btn-primary" ng-click="saveStrategy()">Save</button>
 						<button class="btn btn-primary" ng-click="cancelEditStrategy()">Cancel</button>
 					</div>
@@ -182,7 +184,7 @@
 								</div>
 							</div>
 							<div class="progress" ng-show="action.status == 'Underway'">
-								<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+								<div class="progress-bar progress-bar-mid" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
 								</div>
 							</div>
 							<div class="progress" ng-show="action.status == 'Early Progress'">
@@ -202,34 +204,76 @@
 	</div>
 </div> 
 <div ng-if="showSpecificAction" ng-hide="challengeAreaModel.editAction">
-	<h3>{{challengeAreaModel.challengeArea.name}} : {{challengeAreaModel.selectedStrategy.name}}</h3> 
-	<h4 class="page-header">Action Details </h4>
-	<label width="20%">Action Description: </label> {{challengeAreaModel.action.description}}<br/>
-	<label width="20%">Action Lead:</label> {{challengeAreaModel.action.leaderLastName}}, {{challengeAreaModel.action.leaderFirstName}}<br/>
-	<label width="20%">Agency Lead:</label> {{challengeAreaModel.action.agencyName}}<br>
-	<label>Status: </label> {{challengeAreaModel.action.status}} <br/> 
-	<label>Start Date: </label> {{challengeAreaModel.action.startDate}} <br/> 
-	<label>End Date: </label> {{challengeAreaModel.action.endDate}} <br/>
-	<label>Timing: </label> {{challengeAreaModel.action.timing}}<br/>
-	<label>Data Info Problem Id:</label> {{challengeAreaModel.action.dataInfoProbId}}<br/>
-	<label>Proven Countermeasure:</label> {{challengeAreaModel.action.provenCountermeasure}}<br>
-	<label>Plan Evaluation: </label> {{challengeAreaModel.action.planEval}} <br/> 
-	<label>Resources: </label> {{challengeAreaModel.action.resources}} <br/> 
-	<label>Scope Reach: </label> {{challengeAreaModel.action.scopeReach}} <br/>
-	<label>Legislative: </label> {{challengeAreaModel.action.legislative}} <br/>
-	<label>Last Activity: </label> {{challengeAreaModel.action.lastActivity}}
-	<h4 class="page-header">Performance Measures and Comments</h4>
-	<h4 class="page-header">Comments</h4>
-	<div>
-		<button ng-show="isAdmin() || isChallengeAreaLead()" class="btn btn-primary" ng-click="editAction()">Edit</button>
-		<button  class="btn btn-primary" ng-click="viewChallengeArea(challengeAreaModel.challengeArea)">Back</button>
+	<h3>{{challengeAreaModel.challengeArea.name}} Challenge Area</h3> 
+	<button  class="btn btn-primary right-align" ng-click="viewChallengeArea(challengeAreaModel.challengeArea)">Back</button>
+	<label width="20%">Strategy: </label> {{challengeAreaModel.selectedStrategy.name}}<br/>
+	<div class="border">
+		<h4 class="page-header">Action Details </h4>
+		<div class="form-group">
+			<label width="20%">Action Description: </label> <span>{{challengeAreaModel.action.description}}</span><br/>
+			<label width="20%">Action Lead:</label> <span>{{challengeAreaModel.action.leaderLastName}}, {{challengeAreaModel.action.leaderFirstName}}</span><br/>
+			<label width="20%">Agency Lead:</label><span>{{challengeAreaModel.action.agencyName}}<br></span>
+			<label>Status: </label><span>{{challengeAreaModel.action.status}}</span> <br/> 
+			<label>Start Date: </label> <span>{{challengeAreaModel.action.startDate}}</span> <br/> 
+			<label>End Date: </label> <span>{{challengeAreaModel.action.endDate}}</span> <br/>
+			<label>Scope Reach: </label> <span>{{challengeAreaModel.action.scopeReach}}</span> <br/>
+			<label>Last Activity: </label> <span>{{challengeAreaModel.action.lastActivity}}</span><br/>
+			<button ng-show="isAdmin()" class="btn btn-primary" ng-click="editAction()">Edit</button>
+		</div>
 	</div>
-</div>
+	
+	<div class="border">
+		<h4 class="page-header">Performance Measures and Comments</h4>
+		<ng-include src="'performanceMeasures.html'" ng-controller="MainCtrl"></ng-include>
+	</div>	
+	
+	<div class="border">
+		<h4 class="page-header">Comments</h4>
+		<button  class="btn btn-primary" ng-click="createActionComment()">Add New Comment</button> 
+		<div ng-show="challengeAreaModel.createActionComment">
+			<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionComment"/> 
+			<button  class="btn btn-primary" ng-click="createComment()">Save Comment</button>
+			<button  class="btn btn-primary" ng-click="cancelCreateComment()">Cancel</button>
+		</div>
+		<br>
+		<table id="actioncOMMENTTable" class="table table-bordered">	
+		<div ng-show="challengeAreaModel.actionComments.length == 0">No Comments for this Action</div>
+						<thead ng-hide="challengeAreaModel.actionComments.length == 0">
+							<tr>
+								<th>S.No.</th>
+								<th>Author</th>
+								<th>Date </th>
+								<th>Comment</th>
+								<th>Document</th>
+								<th ng-show="isAdmin()">Actions</th>
+							</tr>			
+						</thead>
+						<tbody ng-hide="challengeAreaModel.actionComments.length == 0"
+						ng-repeat="actionComment in challengeAreaModel.actionComments | orderBy:'-comment_date'">
+						<tr>
+							<td>{{$index +1}}.</td>
+							<td>{{actionComment.author}}</td>
+							<td>{{actionComment.comment_date}}</td>
+							<td ng-hide="challengeAreaModel.editActionComment && challengeAreaModel.selectedActionComment == actionComment.id">{{actionComment.comment}}</td>
+							<td ng-show="challengeAreaModel.editActionComment && challengeAreaModel.selectedActionComment == actionComment.id">
+							<textarea class="form-control" ng-model="actionComment.comment"/></td>
+							<td></td>
+							<td ng-show="isAdmin()">
+							<button title = "Edit" type="button" class="btn btn-danger btn-lg" ng-click="deleteComment(actionComment)">
+								<span class="glyphicon glyphicon-remove" aria-hidden="true" />
+							</button>
+						</td>
+						</tr>
+						</tbody>
+						</table>
+		</div>
+	</div>
 <div ng-show="challengeAreaModel.createAction">
 	<br/>
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">Create Action</h3>
+
 		</div>
 		<div class="panel-body">
 			<form>
@@ -271,13 +315,7 @@
 					</div>
 					<label>Start Date:</label><input class="form-control" ng-model="challengeAreaModel.newAction.startDate" type="date"/>
 					<label>End Date:</label><input class="form-control" ng-model="challengeAreaModel.newAction.endDate" type="date"/>
-					<label>Timing:</label><input class="form-control" ng-model="challengeAreaModel.newAction.timing" type="text">
-					<label>Data Info Problem Id:</label><input class="form-control" ng-model="challengeAreaModel.newAction.dataInfoProbId" type="text"/>
-					<label>Proven Countermeasure:</label><input class="form-control" ng-model="challengeAreaModel.newAction.provenCountermeasure" type="text"/>
-					<label>Plan Evaluation:</label><input class="form-control" ng-model="challengeAreaModel.newAction.planEval" type="text"/>
-					<label>Resources:</label><input class="form-control" ng-model="challengeAreaModel.newAction.resources" type="text"/>
 					<label>Scope Reach:</label><input class="form-control" ng-model="challengeAreaModel.newAction.scopeReach" type="text"/>
-					<label>Legislative:</label><input class="form-control" ng-model="challengeAreaModel.newAction.legislative" type="text"/>
 					<br/>
 					<button class="btn btn-primary" ng-click="createNewAction()">Save</button>
 					<button class="btn btn-primary" ng-click="cancelNewAction()">Cancel</button>
@@ -333,13 +371,7 @@
 					</div>
 					<label>Start Date:</label><input class="form-control" ng-model="challengeAreaModel.action.startDate" type="date"/>
 					<label>End Date:</label><input class="form-control" ng-model="challengeAreaModel.action.endDate" type="date"/>
-					<label>Timing:</label><input class="form-control" ng-model="challengeAreaModel.action.timing" type="text">
-					<label>Data Info Problem Id:</label><input class="form-control" ng-model="challengeAreaModel.action.dataInfoProbId" type="text"/>
-					<label>Proven Countermeasure:</label><input class="form-control" ng-model="challengeAreaModel.action.provenCountermeasure" type="text"/>
-					<label>Plan Evaluation:</label><input class="form-control" ng-model="challengeAreaModel.action.planEval" type="text"/>
-					<label>Resources:</label><input class="form-control" ng-model="challengeAreaModel.action.resources" type="text"/>
 					<label>Scope Reach:</label><input class="form-control" ng-model="challengeAreaModel.action.scopeReach" type="text"/>
-					<label>Legislative:</label><input class="form-control" ng-model="challengeAreaModel.action.legislative" type="text"/>
 					<br/>
 					<button class="btn btn-primary" ng-click="editAndSaveAction()">Save</button>
 					<button class="btn btn-primary" ng-click="cancelEditAction()">Cancel</button>

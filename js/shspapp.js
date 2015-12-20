@@ -274,6 +274,11 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
         challengeAreaModel.editMode = false;
         challengeAreaModel.editStrategy = false;
         challengeAreaModel.create = false;
+        challengeAreaModel.createActionComment = false;
+        challengeAreaModel.createNewOutput = false;
+        challengeAreaModel.createNewOutcome = false;
+        challengeAreaModel.createNewOutputComment = false;
+        challengeAreaModel.createNewOutcomeComment = false;
         $http.get("../php/challengeArea.php").success(function(data) {
             challengeAreaModel.challengeAreas = data.length != 0 ? data: undefined;   
         }).error(function(data) {
@@ -379,6 +384,22 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
         $scope.showSpecificAction = true;
         $scope.challengeAreaModel.action = action;
         $scope.challengeAreaModel.selectedStrategy = strategy;
+        $scope.challengeAreaModel.action.startDate = action.startDate;
+        $scope.challengeAreaModel.action.endDate = action.endDate;
+        $http.get("../php/actionOutput.php",{params: {actionId: challengeAreaModel.action.id}}).success(function(data) {
+            challengeAreaModel.actionOutputs = data;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        });$http.get("../php/actionOutcome.php",{params: {actionId: challengeAreaModel.action.id}}).success(function(data) {
+            challengeAreaModel.actionOutcomes = data;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        });
+        $http.get("../php/actionComment.php",{params: {actionId: challengeAreaModel.action.id}}).success(function(data) {
+            challengeAreaModel.actionComments = data;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        });
     }
 
     $scope.editStrategy = function(strategy) {
@@ -425,6 +446,8 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
 
     $scope.editAction = function() {
         challengeAreaModel.editAction = true;
+        challengeAreaModel.action.startDate = new Date(challengeAreaModel.action.startDate);
+        challengeAreaModel.action.endDate = new Date(challengeAreaModel.action.endDate);
     }
 
     $scope.createNewAction = function() {
@@ -448,6 +471,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
          $http.post("../php/action.php", request).success(function(data) {
             $scope.viewActions(challengeAreaModel.challengeArea.id); 
             challengeAreaModel.createAction = false;
+            challengeAreaModel.newAction = {};
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })
@@ -455,6 +479,10 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
 
     $scope.cancelNewAction = function() {
         challengeAreaModel.createAction = false;
+    }
+
+    $scope.cancelEditAction = function() {
+         challengeAreaModel.editAction = false;
     }
 
     $scope.editAndSaveAction = function() {
@@ -484,6 +512,153 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
         })
     }
 
+    $scope.createActionComment = function() {
+        challengeAreaModel.createActionComment = true;
+    }
+
+
+     $scope.createComment = function() {
+
+        $http.post("../php/actionComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
+           comment: challengeAreaModel.actionComment, actionId: challengeAreaModel.action.id}).success(function(data) {
+            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+            challengeAreaModel.createActionComment = false;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.deleteComment = function(actionComment) {
+        $http.delete("../php/actionComment.php", {params: {id: actionComment.id}}).success(function(data) {
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+        }).error(function(data) {
+             challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.cancelUpdateComment = function() {
+        challengeAreaModel.editActionComment = false;
+    }
+
+
+    $scope.createNewOutput = function() {
+        challengeAreaModel.createNewOutput = true;
+    }
+
+    $scope.createNewOutcome = function() {
+        challengeAreaModel.createNewOutcome = true;
+    }
+
+     $scope.createNewOutputComment = function() {
+        challengeAreaModel.createNewOutputComment = true;
+    }
+
+    $scope.createNewOutcomeComment = function() {
+        challengeAreaModel.createNewOutcomeComment = true;
+    }
+
+
+    $scope.createOutput = function() {
+        $http.post("../php/actionOutput.php", {description: challengeAreaModel.actionOutputDescription, 
+            actionId: challengeAreaModel.action.id}).success(function(data){
+            challengeAreaModel.createNewOutput = false;
+                $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })    
+    }
+
+    $scope.cancelCreateOutput = function() {
+        challengeAreaModel.createNewOutput = false;
+    }
+
+    $scope.cancelCreateOutcome = function() {
+        challengeAreaModel.createNewOutcome = false;
+    }
+
+
+
+    $scope.createOutcome = function(actionOutcome) {
+        $http.post("../php/actionOutcome.php", {description: challengeAreaModel.actionOutcomeDescription, 
+            actionId: challengeAreaModel.action.id}).success(function(data){
+            challengeAreaModel.createNewOutcome = false;
+            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })    
+    }
+
+    $scope.deleteOutput = function(actionOutput) {
+        $http.delete("../php/actionOutput.php", {params: {id:actionOutput.id}}).success(function(data) {
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+        }).error(function(data) {
+             challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.deleteOutcome = function(actionOutcome) {
+        $http.delete("../php/actionOutcome.php", {params: {id: actionOutcome.id}}).success(function(data) {
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+        }).error(function(data) {
+             challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.createNewOutputComment = function() {
+        challengeAreaModel.createNewOutputComment = true;
+    }
+
+    $scope.createNewOutcomeComment = function() {
+        challengeAreaModel.createNewOutcomeComment = true;
+    }
+    $scope.createOutputComment = function(actionOutput) {
+
+        $http.post("../php/actionOutputComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
+           comment: challengeAreaModel.actionOutputComment, actionOutputId: actionOutput.id}).success(function(data) {
+            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+            challengeAreaModel.createNewOutputComment = false;
+            challengeAreaModel.actionOutputComment = "";
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.createOutcomeComment = function(actionOutcome) {
+
+        $http.post("../php/actionOutcomeComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
+           comment: challengeAreaModel.actionOutcomeComment, actionOutcomeId: actionOutcome.id}).success(function(data) {
+            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+            challengeAreaModel.createNewOutcomeComment = false;
+            challengeAreaModel.actionOutcomeComment = "";
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.cancelCreateOutputComment = function() {
+        challengeAreaModel.createNewOutputComment = false;
+        challengeAreaModel.actionOutputComment = "";
+    }
+
+ $scope.cancelCreateOutcomeComment = function() {
+        challengeAreaModel.createNewOutcomeComment = false;
+        challengeAreaModel.actionOutcomeComment = "";
+    }
+    $scope.deleteOutputComment = function(actionOutputComment) {
+        $http.delete("../php/actionOutputComment.php", {params: {id: actionOutputComment.id}}).success(function(data) {
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+        }).error(function(data) {
+             challengeAreaModel.errorObj = data;
+        })
+    }
+
+    $scope.deleteOutcomeComment = function(actionOutcomeComment) {
+        $http.delete("../php/actionOutcomeComment.php", {params: {id: actionOutcomeComment.id}}).success(function(data) {
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+        }).error(function(data) {
+             challengeAreaModel.errorObj = data;
+        })
+    }
 
     init();
 })

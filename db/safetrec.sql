@@ -178,6 +178,7 @@ CREATE TABLE safetrec.action_outcome_comment (
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
+
 #insert agency data
 select * from agency;
 insert into agency values(1, 'ABC', 'Alcoholic Beverage Control');

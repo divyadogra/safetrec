@@ -1,0 +1,120 @@
+<div>
+<h5>Ouput Performance Measures</h5>
+<button class="btn btn-primary" ng-show="isAdmin()" ng-click="createNewOutput()">Create New Output Measure</button> 
+<div class="panel panel-default" ng-show="challengeAreaModel.createNewOutput">
+			<div class="panel-body" >
+				<form>
+						<label>Output Description:</label>
+						<textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutputDescription"/>
+						<button class="btn btn-primary" ng-click="createOutput()">Save</button>
+						<button class="btn btn-primary" ng-click="cancelCreateOutput()">Cancel</button></div>
+				</form>
+			</div>
+</div>
+<div ng-show="challengeAreaModel.actionOutputs.length == 0" font-size="10%">No Outputs for this Action</div>
+<div ng-repeat="output in challengeAreaModel.actionOutputs">
+	<div class="panel panel-default">
+				<div class="panel-heading">
+					<div>{{index+1}} {{output.description}}
+						<div align="right"> <button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="deleteOutput(output)">Delete</button>
+						<button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="createNewOutputComment()">Create Output Comment</button>
+						</div>
+					</div>
+				</div>
+	<div ng-show="challengeAreaModel.createNewOutputComment">
+		<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutputComment"/> 
+		<button  class="btn btn-primary" ng-click="createOutputComment(output)">Save Comment</button>
+		<button  class="btn btn-primary" ng-click="cancelCreateOutputComment()">Cancel</button>
+	</div>
+	<br>
+	<table class="table table-bordered">	
+		<div ng-show="output.comments.length == 0" font-size="10%">No Comments for this Output</div>
+		<thead ng-hide="output.comments.length == 0">
+						<tr>
+							<th>S.No.</th>
+							<th>Author</th>
+							<th>Date </th>
+							<th>Comment</th>
+							<th>Document</th>
+							<th ng-show="isAdmin()">Actions</th>
+						</tr>			
+		</thead>
+		<tbody ng-hide="output.comments.length == 0"
+					ng-repeat="outputComment in output.comments | orderBy:'-comment_date'">
+					<tr>
+						<td>{{$index +1}}.</td>
+						<td>{{outputComment.author}}</td>
+						<td>{{outputComment.comment_date}}</td>
+						<td>{{outputComment.comment}}</td>
+						<td></td>
+						<td ng-show="isAdmin()">
+						<button title = "Delete" type="button" class="btn btn-primary btn-lg" ng-click="deleteOutputComment(outputComment)">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true" />
+						</button>
+						</td>
+					</tr>
+		</tbody>
+	</table>
+	</div>
+	</div>
+							
+
+<h5>Outcome Performance Measures</h5>	
+<button class="btn btn-primary" ng-show="isAdmin()" ng-click="createNewOutcome()">Create New Outcome Measure</button> 
+<div class="panel panel-default" ng-show="challengeAreaModel.createNewOutcome">
+			<div class="panel-body" ng-show="challengeAreaModel.createNewOutcome">
+				<form>
+					<div>
+						<label>Outcome Description:</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutcomeDescription"/>
+						<button class="btn btn-primary" ng-click="createOutcome()">Save</button>
+						<button class="btn btn-primary" ng-click="cancelCreateOutcome()">Cancel</button></div>
+					</form>
+				</div>
+</div>
+<div ng-show="challengeAreaModel.actionOutcomes.length == 0" font-size="10%">No Outcomes for this Action</div>
+<div ng-repeat="outcome in challengeAreaModel.actionOutcomes">
+	<div class="panel panel-default">
+				<div class="panel-heading">
+					<div>{{outcome.description}}
+						<div align="right"> <button  class="btn btn-danger btn-lg" align="right" ng-show="isAdmin()" ng-click="deleteOutcome(outcome)">Delete</button>
+						<button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="createNewOutcomeComment()">Create Outcome Comment</button>
+						</div>
+					</div>
+				</div>
+	<div ng-show="challengeAreaModel.createNewOutcomeComment">
+		<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutcomeComment"/> 
+		<button  class="btn btn-primary" ng-click="createOutcomeComment(outcome)">Save Comment</button>
+		<button  class="btn btn-primary" ng-click="cancelCreateOutcomeComment()">Cancel</button>
+	</div>
+	<br>
+	<table class="table table-bordered">	
+		<div ng-show="outcome.comments.length == 0" font-size="10%">No Comments for this Outcome</div>
+		<thead ng-hide="outcome.comments.length == 0">
+						<tr>
+							<th>S.No.</th>
+							<th>Author</th>
+							<th>Date </th>
+							<th>Comment</th>
+							<th>Document</th>
+							<th ng-show="isAdmin()">Actions</th>
+						</tr>			
+		</thead>
+		<tbody ng-hide="outcome.comments.length == 0"
+					ng-repeat="outcomeComment in outcome.comments | orderBy:'-comment_date'">
+					<tr>
+						<td>{{$index +1}}.</td>
+						<td>{{outcomeComment.author}}</td>
+						<td>{{outcomeComment.comment_date}}</td>
+						<td>{{outcomeComment.comment}}</td>
+						<td></td>
+						<td ng-show="isAdmin()">
+						<button title = "Delete" type="button" class="btn btn-danger btn-lg" ng-click="deleteOutcomeComment(outcomeComment)">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true" />
+						</button>
+					</td>
+					</tr>
+		</tbody>
+	</table>
+	</div>
+	</div>
+</div>

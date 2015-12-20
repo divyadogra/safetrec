@@ -34,8 +34,8 @@ function viewActions($challengeId) {
             $results = executeQuery($query);
 
             for($i=0, $c = count($results); $i < $c; $i++) {
-              $query = "select action.id, action.description, action.status, action.division_id as divisionId, action.lead_id as leadId, DATE_FORMAT(action.start_date, '%m/%d/%Y') as startDate, DATE_FORMAT(action.end_date, '%m/%d/%Y') as endDate, action.timing, action.data_info_prob_id as dataInfoProbId,
-                        action.proven_countermeasure as provenCountermeasure, action.plan_eval as planEval, action.resources, action.scope_reach as scopeReach, action.legislative, action.last_activity as lastActivity,
+              $query = "select action.id, action.description, action.status, action.division_id as divisionId, action.lead_id as leadId, DATE_FORMAT(action.start_date, '%m/%d/%Y') as startDate, DATE_FORMAT(action.end_date, '%m/%d/%Y') as endDate, 
+                        action.scope_reach as scopeReach, action.last_activity as lastActivity,
                         user.last_name as leaderLastName, user.first_name as leaderFirstName, agency.name as agencyName, agency.id as agencyId
                         from action, user, agency where action.lead_id = user.id and action.agency_id = agency.id and action.strategy_id=".$results[$i]['id'];
               $actionResults = executeQuery($query);        
@@ -65,18 +65,11 @@ function createAction() {
             $startDate = substr($startDate, 0, 10); 
             $endDate = $request->endDate;
             $endDate = substr($endDate, 0, 10); 
-            $timing = $request->timing;
-            $dataInfoProbId = $request->dataInfoProbId;
-            $provenCountermeasure = $request->provenCountermeasure;
-            $planEval = $request->planEval;
-            $resources = $request->resources;
-            $scopeReach = $request->scopeReach;
-            $legislative = $request->legislative; 
+            $scopeReach = $request->scopeReach; 
             
-            $query = sprintf("insert into action(strategy_id, description, status, lead_id, agency_id, division_id, start_date, end_date, timing, data_info_prob_id, proven_countermeasure, plan_eval,resources, scope_reach, legislative, last_activity) values (%d, '%s', '%s', %d, %d, %d, '%s', '%s', '%s','%s', '%s', '%s','%s', '%s', '%s', now())", 
+            $query = sprintf("insert into action(strategy_id, description, status, lead_id, agency_id, division_id, start_date, end_date, scope_reach, last_activity) values (%d, '%s', '%s', %d, %d, %d, '%s', '%s', '%s', now())", 
                               $strategyId, $description, $status, $leadId, $agencyId, $divisionId, $startDate,
-                              $endDate, $timing, $dataInfoProbId, $provenCountermeasure, $planEval, $resources,
-                              $scopeReach, $legislative);   
+                              $endDate, $scopeReach);   
 
             $results = executeQuery($query);
 
@@ -104,21 +97,14 @@ function updateAction() {
             $startDate = substr($startDate, 0, 10); 
             $endDate = $request->endDate;
             $endDate = substr($endDate, 0, 10); 
-            $timing = $request->timing;
-            $dataInfoProbId = $request->dataInfoProbId;
-            $provenCountermeasure = $request->provenCountermeasure;
-            $planEval = $request->planEval;
-            $resources = $request->resources;
             $scopeReach = $request->scopeReach;
-            $legislative = $request->legislative; 
+          
 
             $query = sprintf("update action set strategy_id=%d, description='%s', 
                                 status='%s',lead_id=%d, agency_id=%d, division_id=%d, start_date='%s', end_date='%s',
-                                timing='%s', data_info_prob_id='%s', proven_countermeasure='%s', plan_eval='%s',
-                                resources='%s', scope_reach='%s', legislative='%s', last_activity=now() where id=%d",
+                                scope_reach='%s', last_activity=now() where id=%d",
                                 $strategyId, $description, $status, $leadId, $agencyId, $divisionId, $startDate,
-                                $endDate, $timing, $dataInfoProbId, $provenCountermeasure, $planEval, $resources,
-                                $scopeReach, $legislative, $id);         
+                                $endDate, $scopeReach, $id);         
             $results = executeQuery($query);
 
                   // TODO

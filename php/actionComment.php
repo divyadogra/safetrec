@@ -28,7 +28,7 @@ try {
 function viewActionComments($actionId) {
       try{
 
-            $query = "select author, comment_date, comment from action_comment where action_id =".$actionId;         
+            $query = "select id, author, comment_date, comment from action_comment where action_id =".$actionId;         
             $results = executeQuery($query);
 
             $response = json_encode($results);
