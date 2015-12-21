@@ -102,7 +102,7 @@
 			</div>
 			<br> <label ng-hide="userModel.users">No User Added yet</label>
 			<div id="dvData" class="table-responsive" ng-show="userModel.users && !userModel.viewMode && !userModel.editMode">
-				<table id="testTable" class="table table-striped table-bordered">
+				<table id="testTable" class="table table-bordered">
 					<thead>
 						<tr>
 							<td><b>Name</td>
@@ -115,7 +115,11 @@
 						<tr>
 							<td><a href="" ng-click="viewUser(user)">{{user.lastName}}, {{user.firstName}} </a></td>
 							<td>{{user.email}}</td>
-							<td><button class="btn-group btn-group-xs btn-primary" ng-click="editUser(user)">Edit</button></td>
+							<td>
+								<button class="btn btn-sm btn-primary" ng-click="editUser(user)">
+									<span class="glyphicon glyphicon-pencil" aria-hidden="true" />
+								</button>
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -123,20 +127,56 @@
 		</div>
 
 		<div ng-show="userModel.viewMode">
-			<h4>User Details</h4>
-			<br>
-			<label> First Name : {{userModel.selectedUser.firstName}} </label>
-			<br>
-			<label> Last Name : {{userModel.selectedUser.lastName}} </label>
-			<br>
-			<label> Email : {{userModel.selectedUser.email}} </label>
-			<br>
-			<label> Phone : {{userModel.selectedUser.phone}} </label>
-			<br>
-			<label> Agency : {{userModel.selectedUser.agency}} </label>
-			<br>
-			<label> Role : {{userModel.selectedUser.role}} </label>
-			<br><br>
+			<h4 class="page-header">User Details</h4>
+			<div class="row">
+				<div class="col-md-2">
+					<label>First Name: </label>
+				</div>
+				<div class="col-md-10">
+					{{userModel.selectedUser.firstName}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Last Name: </label>
+				</div>
+				<div class="col-md-10">
+					{{userModel.selectedUser.lastName}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Email: </label>
+				</div>
+				<div class="col-md-10">
+					{{userModel.selectedUser.email}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Phone: </label>
+				</div>
+				<div class="col-md-10">
+					{{userModel.selectedUser.phone}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Agency: </label>
+				</div>
+				<div class="col-md-10">
+					{{userModel.selectedUser.agency}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Role: </label>
+				</div>
+				<div class="col-md-10">
+					{{userModel.selectedUser.role}}
+				</div>
+			</div>
+			<br/>
 			<button class="btn btn-primary" ng-click="getUsers()">Back</button>
 			<button class="btn btn-primary" ng-click="editUser(userModel.selectedUser)">Edit</button>
 		</div>
