@@ -16,8 +16,9 @@
 	<div class="panel panel-default">
 				<div class="panel-heading">
 					<div>{{index+1}} {{output.description}}
-						<div align="right"> <button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="deleteOutput(output)">Delete</button>
-						<button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="createNewOutputComment()">Create Output Comment</button>
+						<div align="right"> 
+						<button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="deleteOutput(output)">Delete</button>
+						<button  class="btn btn-primary" align="right" ng-show="hasPrivileges()" ng-click="createNewOutputComment()">Add Comment</button>
 						</div>
 					</div>
 				</div>
@@ -31,7 +32,6 @@
 		<div ng-show="output.comments.length == 0" font-size="10%">No Comments for this Output</div>
 		<thead ng-hide="output.comments.length == 0">
 						<tr>
-							<th>S.No.</th>
 							<th>Author</th>
 							<th>Date </th>
 							<th>Comment</th>
@@ -42,7 +42,6 @@
 		<tbody ng-hide="output.comments.length == 0"
 					ng-repeat="outputComment in output.comments | orderBy:'-comment_date'">
 					<tr>
-						<td>{{$index +1}}.</td>
 						<td>{{outputComment.author}}</td>
 						<td>{{outputComment.comment_date}}</td>
 						<td>{{outputComment.comment}}</td>
@@ -77,7 +76,7 @@
 				<div class="panel-heading">
 					<div>{{outcome.description}}
 						<div align="right"> <button  class="btn btn-danger btn-lg" align="right" ng-show="isAdmin()" ng-click="deleteOutcome(outcome)">Delete</button>
-						<button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="createNewOutcomeComment()">Create Outcome Comment</button>
+						<button  class="btn btn-primary" align="right" ng-show="hasPrivileges()" ng-click="createNewOutcomeComment()">Add Comment</button>
 						</div>
 					</div>
 				</div>

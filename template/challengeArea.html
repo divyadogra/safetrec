@@ -38,7 +38,6 @@
 					<table id="testTable" class="table">
 						<thead>
 							<tr>
-								<th>S.No.</th>
 								<th>Name</th>
 								<th>Co-Lead</th>
 								<th>Co-Lead</th>
@@ -48,15 +47,14 @@
 						<tbody
 						ng-repeat="challengeArea in challengeAreaModel.challengeAreas">
 						<tr>
-							<td>{{$index+1}}.</td>
 							<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
 								<a href="" ng-click="viewChallengeArea(challengeArea)">{{challengeArea.name}}</a>
 							</td>
 							<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
-								{{challengeArea.leader1LastName}}, {{challengeArea.leader1FirstName}}
+								<a href="" ng-click="sendMail(challengeArea.leader1_id, 'Challenge Area', challengeArea.name)">{{challengeArea.leader1LastName}}, {{challengeArea.leader1FirstName}}</a>
 							</td>
 							<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
-								{{challengeArea.leader2LastName}}, {{challengeArea.leader2FirstName}}
+								<a href="" ng-click="sendMail(challengeArea.leader2_id, 'Challenge Area', challengeArea.name)">{{challengeArea.leader2LastName}}, {{challengeArea.leader2FirstName}}</a>
 							</td>
 							<td ng-show="challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id">
 								<input class="form-control" type="text" ng-model="challengeArea.name"/>
@@ -169,9 +167,9 @@
 					<tbody
 					ng-repeat="action in strategy.actions">
 					<tr>
-						<td>{{$index +1}}.</td>
+						<td>{{$parent.$index +1 }}.{{$index +1}}</td>
 						<td><a href="" ng-click="viewAction(action, strategy)">{{action.description}}</a></td>
-						<td>{{action.leaderLastName}}, {{action.leaderFirstName}}</td>
+						<td><a href="" ng-click="sendMail(action.lead_id, 'Action', action.description)">{{action.leaderLastName}}, {{action.leaderFirstName}}</td>
 						<td>{{action.agencyName}}</td>
 						<td>{{action.endDate}}</td>
 						<td>
@@ -213,7 +211,17 @@
 			<label width="20%">Action Description: </label> <span>{{challengeAreaModel.action.description}}</span><br/>
 			<label width="20%">Action Lead:</label> <span>{{challengeAreaModel.action.leaderLastName}}, {{challengeAreaModel.action.leaderFirstName}}</span><br/>
 			<label width="20%">Agency Lead:</label><span>{{challengeAreaModel.action.agencyName}}<br></span>
-			<label>Status: </label><span>{{challengeAreaModel.action.status}}</span> <br/> 
+			<label>Status: </label>
+			<span ng-show="!hasPrivileges()">{{challengeAreaModel.action.status}}</span> 
+			<span><select ng-show="hasPrivileges()"
+					ng-model="challengeAreaModel.action.status">
+						<option>Not Started</option>
+						<option>Early Progress</option>
+						<option>Underway</option>
+						<option>Substantial Progress</option>
+						<option>Completed</option>
+			</select>
+			<button class="btn btn-primary" ng-show="hasPrivileges()" ng-click="saveStatus()">Save</button></span><br/>
 			<label>Start Date: </label> <span>{{challengeAreaModel.action.startDate}}</span> <br/> 
 			<label>End Date: </label> <span>{{challengeAreaModel.action.endDate}}</span> <br/>
 			<label>Scope Reach: </label> <span>{{challengeAreaModel.action.scopeReach}}</span> <br/>
@@ -229,7 +237,7 @@
 	
 	<div class="border">
 		<h4 class="page-header">Comments</h4>
-		<button  class="btn btn-primary" ng-click="createActionComment()">Add New Comment</button> 
+		<div align="right"><button  class="btn btn-primary" ng-show="hasPrivileges()" ng-click="createActionComment()">Add New Comment</button> </div>
 		<div ng-show="challengeAreaModel.createActionComment">
 			<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionComment"/> 
 			<button  class="btn btn-primary" ng-click="createComment()">Save Comment</button>
@@ -374,6 +382,7 @@
 					<label>Scope Reach:</label><input class="form-control" ng-model="challengeAreaModel.action.scopeReach" type="text"/>
 					<br/>
 					<button class="btn btn-primary" ng-click="editAndSaveAction()">Save</button>
+					<button class="btn btn-primary" ng-click="deleteAction()">Delete</button>
 					<button class="btn btn-primary" ng-click="cancelEditAction()">Cancel</button>
 				</div>
 			</form>
