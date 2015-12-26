@@ -72,18 +72,18 @@
 							<!-- TODO add leaders here -->
 
 							<td ng-show="!challengeAreaModel.editMode && loggedInUser.role == 'Admin'" >
-								<button title = "Edit" type="button" class="btn btn-primary btn-lg" ng-click="editChallengeArea(challengeArea)">
+								<button title = "Edit" type="button" class="btn btn-primary btn-sm" ng-click="editChallengeArea(challengeArea)">
 									<span class="glyphicon glyphicon-pencil" aria-hidden="true" />
 								</button>
 							</td>
 							<td ng-show="challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id">
-								<button title = "Update" type="button" class="btn btn-success btn-lg" ng-click="updateChallengeArea(challengeArea)">
+								<button title = "Update" type="button" class="btn btn-success btn-sm" ng-click="updateChallengeArea(challengeArea)">
 									<span class="glyphicon glyphicon-ok" aria-hidden="true"/>
 								</button>
-								<button title = "Delete" type="button" class="btn btn-danger btn-lg" ng-click="deleteChallengeArea(challengeArea)">
+								<button title = "Delete" type="button" class="btn btn-danger btn-sm" ng-click="deleteChallengeArea(challengeArea)">
 									<span class="glyphicon glyphicon-remove" aria-hidden="true" />
 								</button>
-								<button title = "Cancel" type="button" class="btn btn-warning btn-lg" ng-click="cancel()">
+								<button title = "Cancel" type="button" class="btn btn-warning btn-sm" ng-click="cancel()">
 									<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"/>
 								</button>
 							</td>
@@ -151,12 +151,12 @@
 						<button class="btn btn-primary" ng-click="cancelEditStrategy()">Cancel</button>
 					</div>
 				</div>
-				<table id="actionTable" class="table table-bordered">	
+				<table id="actionTable" class="table table-bordered table-condensed">	
 					<thead>
 						<div ng-show="strategy.actions.length == 0" font-size="10%">No Actions for this Strategy</div>
 						<tr ng-show="strategy.actions.length > 0">
 							<th>S.No.</th>
-							<th width="40%">Action Description</th>
+							<th width="30%">Action Description</th>
 							<th>Action Lead</th>
 							<th>Agency</th>
 							<th>Estimated Completion Date</th>
@@ -202,48 +202,116 @@
 	</div>
 </div> 
 <div ng-if="showSpecificAction" ng-hide="challengeAreaModel.editAction">
-	<h3>{{challengeAreaModel.challengeArea.name}} Challenge Area</h3> 
-	<button  class="btn btn-primary right-align" ng-click="viewChallengeArea(challengeAreaModel.challengeArea)">Back</button>
-	<label width="20%">Strategy: </label> {{challengeAreaModel.selectedStrategy.name}}<br/>
-	<div class="border">
+	<div class="row">
+		<div class="col-md-12">
+			<h3>{{challengeAreaModel.challengeArea.name}} Challenge Area</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-10">
+			<label>Strategy: </label> 
+			{{challengeAreaModel.selectedStrategy.name}}
+		</div>
+		<div class="col-md-2">
+			<button  class="btn btn-primary right-align" ng-click="viewChallengeArea(challengeAreaModel.challengeArea)">Back</button>
+		</div>
+	</div>
+	<div>
 		<h4 class="page-header">Action Details </h4>
-		<div class="form-group">
-			<label width="20%">Action Description: </label> <span>{{challengeAreaModel.action.description}}</span><br/>
-			<label width="20%">Action Lead:</label> <span>{{challengeAreaModel.action.leaderLastName}}, {{challengeAreaModel.action.leaderFirstName}}</span><br/>
-			<label width="20%">Agency Lead:</label><span>{{challengeAreaModel.action.agencyName}}<br></span>
-			<label>Status: </label>
-			<span ng-show="!hasPrivileges()">{{challengeAreaModel.action.status}}</span> 
-			<span><select ng-show="hasPrivileges()"
+		<div class="row">
+			<div class="col-md-2">
+				<label>Action Description: </label>
+			</div>
+			<div class="col-md-10">
+			 	<span>{{challengeAreaModel.action.description}}</span>
+			 </div>
+		</div>
+		<div class="row">
+			 <div class="col-md-2">
+				<label width="20%">Action Lead:</label> 
+			</div>
+			<div class="col-md-10">
+				<span>{{challengeAreaModel.action.leaderLastName}}, {{challengeAreaModel.action.leaderFirstName}}</span><br/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2">
+				<label width="20%">Agency Lead:</label>
+			</div>
+			<div class="col-md-10">
+				<span>{{challengeAreaModel.action.agencyName}}</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2">
+				<label>Status: </label>
+			</div>
+			<div class="col-md-10">
+				<span ng-show="!hasPrivileges()">{{challengeAreaModel.action.status}}</span>
+				<span><select ng-show="hasPrivileges()"
 					ng-model="challengeAreaModel.action.status">
 						<option>Not Started</option>
 						<option>Early Progress</option>
 						<option>Underway</option>
 						<option>Substantial Progress</option>
 						<option>Completed</option>
-			</select>
-			<button class="btn btn-primary" ng-show="hasPrivileges()" ng-click="saveStatus()">Save</button></span><br/>
-			<label>Start Date: </label> <span>{{challengeAreaModel.action.startDate}}</span> <br/> 
-			<label>End Date: </label> <span>{{challengeAreaModel.action.endDate}}</span> <br/>
-			<label>Scope Reach: </label> <span>{{challengeAreaModel.action.scopeReach}}</span> <br/>
-			<label>Last Activity: </label> <span>{{challengeAreaModel.action.lastActivity}}</span><br/>
-			<button ng-show="isAdmin()" class="btn btn-primary" ng-click="editAction()">Edit</button>
+					</select>
+					<button class="btn btn-primary" ng-show="hasPrivileges()" ng-click="saveStatus()">Save</button>
+				</span>
+			</div>
 		</div>
+		<div class="row">
+			<div class="col-md-2">
+				<label>Start Date: </label> 
+			</div>
+			<div class="col-md-10">
+				<span>{{challengeAreaModel.action.startDate}}</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2">
+				<label>End Date: </label> 
+			</div>
+			<div class="col-md-10">
+				<span>{{challengeAreaModel.action.endDate}}</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2">
+				<label>Scope Reach: </label>
+			</div>
+			<div class="col-md-10">
+				<span>{{challengeAreaModel.action.scopeReach}}</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2">
+				<label>Last Activity: </label>
+			</div>
+			<div class="col-md-10">
+				<span>{{challengeAreaModel.action.lastActivity}}</span>
+			</div>
+		</div>
+		<br/>
+		<button ng-show="isAdmin()" class="btn btn-primary" ng-click="editAction()">Edit</button>
 	</div>
 	
-	<div class="border">
+	<div>
 		<h4 class="page-header">Performance Measures and Comments</h4>
 		<ng-include src="'performanceMeasures.html'" ng-controller="MainCtrl"></ng-include>
 	</div>	
-	
-	<div class="border">
-		<h4 class="page-header">Comments</h4>
-		<div align="right"><button  class="btn btn-primary" ng-show="hasPrivileges()" ng-click="createActionComment()">Add New Comment</button> </div>
+
+	<div>
+		<h4 class="page-header">Action Comments</h4>
+		<button  class="btn btn-primary" ng-show="hasPrivileges()" ng-click="createActionComment()">Add New Comment</button> 
+		<br/>
 		<div ng-show="challengeAreaModel.createActionComment">
 			<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionComment"/> 
+			<br/>
 			<button  class="btn btn-primary" ng-click="createComment()">Save Comment</button>
 			<button  class="btn btn-primary" ng-click="cancelCreateComment()">Cancel</button>
 		</div>
-		<br>
+		<br/>
 		<table id="actioncOMMENTTable" class="table table-bordered">	
 		<div ng-show="challengeAreaModel.actionComments.length == 0">No Comments for this Action</div>
 						<thead ng-hide="challengeAreaModel.actionComments.length == 0">
@@ -267,7 +335,7 @@
 							<textarea class="form-control" ng-model="actionComment.comment"/></td>
 							<td></td>
 							<td ng-show="isAdmin()">
-							<button title = "Edit" type="button" class="btn btn-danger btn-lg" ng-click="deleteComment(actionComment)">
+							<button title = "Edit" type="button" class="btn btn-danger btn-sm" ng-click="deleteComment(actionComment)">
 								<span class="glyphicon glyphicon-remove" aria-hidden="true" />
 							</button>
 						</td>

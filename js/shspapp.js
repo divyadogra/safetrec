@@ -587,6 +587,21 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         challengeAreaModel.createNewOutcomeComment = true;
     }
 
+    $scope.showOutputComments = function(output) {
+        output.showComments = true;
+    }
+
+    $scope.hideOutputComments = function(output) {
+        output.showComments = false;
+    }
+
+    $scope.hideOutcomeComments = function(outcome) {
+        outcome.showComments = false;
+    }
+
+    $scope.showOutcomeComments = function(outcome) {
+        outcome.showComments = true;
+    }
 
     $scope.createOutput = function() {
         $http.post("../php/actionOutput.php", {description: challengeAreaModel.actionOutputDescription, 

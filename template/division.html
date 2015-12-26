@@ -57,18 +57,18 @@
 					</td>
 					
 					<td ng-show="!divisionModel.editMode">
-						<button title = "Edit" type="button" class="btn btn-primary btn-lg" ng-click="editDivision(division)">
+						<button title = "Edit" type="button" class="btn btn-primary btn-sm" ng-click="editDivision(division)">
 							<span class="glyphicon glyphicon-pencil" aria-hidden="true" />
 						</button>
 					</td>
 					<td ng-show="divisionModel.editMode && divisionModel.selectedDivision == division.id">
-						<button title = "Update" type="button" class="btn btn-success btn-lg" ng-click="updateDivision(division)">
+						<button title = "Update" type="button" class="btn btn-success btn-sm" ng-click="updateDivision(division)">
 							<span class="glyphicon glyphicon-ok" aria-hidden="true"/>
 						</button>
-						<button title = "Delete" type="button" class="btn btn-danger btn-lg" ng-click="deleteDivision(division)">
+						<button title = "Delete" type="button" class="btn btn-danger btn-sm" ng-click="deleteDivision(division)">
 							<span class="glyphicon glyphicon-remove" aria-hidden="true"/>
 						</button>
-						<button title = "Cancel" type="button" class="btn btn-warning btn-lg" ng-click="cancel()">	
+						<button title = "Cancel" type="button" class="btn btn-warning btn-sm" ng-click="cancel()">	
 							<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"/>
 						</button>
 					</td>

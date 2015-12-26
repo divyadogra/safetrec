@@ -1,11 +1,20 @@
 <div>
-<h5>Ouput Performance Measures</h5>
-<button class="btn btn-primary" ng-show="isAdmin()" ng-click="createNewOutput()">Create New Output Measure</button> 
+<div class="row">
+	<div class="col-md-9">
+		<p> <b>Output Performance Measures</b></p>
+	</div>
+	<div class="col-md-3">
+		<button class="btn btn-primary right-align" ng-show="isAdmin()" ng-click="createNewOutput()">Create New Output Measure
+		</button> 
+	</div>
+</div>
+<br/>
 <div class="panel panel-default" ng-show="challengeAreaModel.createNewOutput">
 			<div class="panel-body" >
 				<form>
 						<label>Output Description:</label>
 						<textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutputDescription"/>
+						<br/>
 						<button class="btn btn-primary" ng-click="createOutput()">Save</button>
 						<button class="btn btn-primary" ng-click="cancelCreateOutput()">Cancel</button></div>
 				</form>
@@ -15,21 +24,32 @@
 <div ng-repeat="output in challengeAreaModel.actionOutputs">
 	<div class="panel panel-default">
 				<div class="panel-heading">
-					<div>{{index+1}} {{output.description}}
-						<div align="right"> 
-						<button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="deleteOutput(output)">Delete</button>
-						<button  class="btn btn-primary" align="right" ng-show="hasPrivileges()" ng-click="createNewOutputComment()">Add Comment</button>
+					<div class="row">
+						<div class="col-md-8">
+							{{index+1}} {{output.description}}
+						</div>
+						<div class="col-md-4">
+							<div class="btn-toolbar right-align">
+								<button title="Create Output Comment" class="btn btn-info" ng-show="hasPrivileges()" ng-click="createNewOutputComment()"><span class="glyphicon glyphicon-comment" aria-hidden="true" /></button>
+								<button title="Delete" class="btn btn-danger" ng-show="isAdmin()" ng-click="deleteOutput(output)"><span class="glyphicon glyphicon-remove" aria-hidden="true" /></button>
+						</div>
 						</div>
 					</div>
 				</div>
 	<div ng-show="challengeAreaModel.createNewOutputComment">
 		<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutputComment"/> 
+		<br/>
 		<button  class="btn btn-primary" ng-click="createOutputComment(output)">Save Comment</button>
 		<button  class="btn btn-primary" ng-click="cancelCreateOutputComment()">Cancel</button>
 	</div>
-	<br>
-	<table class="table table-bordered">	
-		<div ng-show="output.comments.length == 0" font-size="10%">No Comments for this Output</div>
+	<br/>
+
+	<a href="" class="glyphicon glyphicon-expand" aria-hidden="true" ng-show="!output.showComments" ng-click="showOutputComments(output)"><font size="4">Comments</font></a>
+	<a href="" class="glyphicon glyphicon-collapse-down" aria-hidden="true" ng-show="output.showComments" ng-click="hideOutputComments(output)"><font size="4">Comments</font></a>
+	<br/>
+	<br/>
+	<table offset="10" class="table table-bordered" ng-show="output.showComments">	
+		<div ng-show="output.showComments && output.comments.length == 0" font-size="10%">No Comments for this Output</div>
 		<thead ng-hide="output.comments.length == 0">
 						<tr>
 							<th>Author</th>
@@ -47,7 +67,7 @@
 						<td>{{outputComment.comment}}</td>
 						<td></td>
 						<td ng-show="isAdmin()">
-						<button title = "Delete" type="button" class="btn btn-primary btn-lg" ng-click="deleteOutputComment(outputComment)">
+						<button title = "Delete" type="button" class="btn btn-danger btn-sm" ng-click="deleteOutputComment(outputComment)">
 							<span class="glyphicon glyphicon-remove" aria-hidden="true" />
 						</button>
 						</td>
@@ -57,14 +77,21 @@
 	</div>
 	</div>
 							
-
-<h5>Outcome Performance Measures</h5>	
-<button class="btn btn-primary" ng-show="isAdmin()" ng-click="createNewOutcome()">Create New Outcome Measure</button> 
+<div class="row">
+	<div class="col-md-9">
+		<p> <b>Outcome Performance Measures</b></p>
+	</div>
+	<div class="col-md-3">
+		<button class="btn btn-primary right-align" ng-show="isAdmin()" ng-click="createNewOutcome()">Create New Outcome Measure</button>  
+	</div>
+</div>
+<br/>
 <div class="panel panel-default" ng-show="challengeAreaModel.createNewOutcome">
 			<div class="panel-body" ng-show="challengeAreaModel.createNewOutcome">
 				<form>
 					<div>
 						<label>Outcome Description:</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutcomeDescription"/>
+						<br/>
 						<button class="btn btn-primary" ng-click="createOutcome()">Save</button>
 						<button class="btn btn-primary" ng-click="cancelCreateOutcome()">Cancel</button></div>
 					</form>
@@ -74,20 +101,32 @@
 <div ng-repeat="outcome in challengeAreaModel.actionOutcomes">
 	<div class="panel panel-default">
 				<div class="panel-heading">
-					<div>{{outcome.description}}
-						<div align="right"> <button  class="btn btn-danger btn-lg" align="right" ng-show="isAdmin()" ng-click="deleteOutcome(outcome)">Delete</button>
-						<button  class="btn btn-primary" align="right" ng-show="hasPrivileges()" ng-click="createNewOutcomeComment()">Add Comment</button>
+					<div class="row">
+						<div class="col-md-8">
+							{{outcome.description}}
+						</div>
+						<div class="col-md-4">
+							<div class="btn-toolbar right-align">
+								<button title="Create Outcome Comment" class="btn btn-info" ng-show="isAdmin()" ng-click="createNewOutcomeComment()"><span class="glyphicon glyphicon-comment" aria-hidden="true" /></button>
+								<button title="Delete" class="btn btn-danger" ng-show="hasPrivileges()" ng-click="deleteOutcome(outcome)"><span class="glyphicon glyphicon-remove" aria-hidden="true" /></button>
+						</div>
 						</div>
 					</div>
 				</div>
 	<div ng-show="challengeAreaModel.createNewOutcomeComment">
 		<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutcomeComment"/> 
+		<br/>
 		<button  class="btn btn-primary" ng-click="createOutcomeComment(outcome)">Save Comment</button>
 		<button  class="btn btn-primary" ng-click="cancelCreateOutcomeComment()">Cancel</button>
 	</div>
-	<br>
-	<table class="table table-bordered">	
-		<div ng-show="outcome.comments.length == 0" font-size="10%">No Comments for this Outcome</div>
+	<br/>
+
+	<a href="" class="glyphicon glyphicon-expand" aria-hidden="true" ng-show="!outcome.showComments" ng-click="showOutcomeComments(outcome)"><font size="4">Comments</font></a>
+	<a href="" class="glyphicon glyphicon-collapse-down" aria-hidden="true" ng-show="outcome.showComments" ng-click="hideOutcomeComments(outcome)"><font size="4">Comments</font></a>
+	<br/>
+	<br/>
+	<table class="table table-bordered" ng-show="outcome.showComments">	
+		<div ng-show="outcome.showComments && outcome.comments.length == 0" font-size="10%">No Comments for this Outcome</div>
 		<thead ng-hide="outcome.comments.length == 0">
 						<tr>
 							<th>S.No.</th>
@@ -107,7 +146,7 @@
 						<td>{{outcomeComment.comment}}</td>
 						<td></td>
 						<td ng-show="isAdmin()">
-						<button title = "Delete" type="button" class="btn btn-danger btn-lg" ng-click="deleteOutcomeComment(outcomeComment)">
+						<button title = "Delete" type="button" class="btn btn-danger btn-sm" ng-click="deleteOutcomeComment(outcomeComment)">
 							<span class="glyphicon glyphicon-remove" aria-hidden="true" />
 						</button>
 					</td>
