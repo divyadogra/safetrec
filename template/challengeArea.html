@@ -11,11 +11,11 @@
 				</div>
 				<div class="panel-body">
 					<form>
-						<label>Name</label><input type="text" class="form-control" ng-model="challengeAreaModel.challengeAreaName"/>
+						<label>Challenge Area</label><input type="text" class="form-control" ng-model="challengeAreaModel.challengeAreaName"/>
 						<label>Co-Lead:</label> <select class="form-control" required
 						ng-model="challengeAreaModel.leader1" name="leader1" id="leader1">
 						<option ng-repeat="leader in challengeAreaModel.leaders" value="{{leader.id}}">
-							{{leader.lastName}}, {{leader.firstName}}</option>
+							 {{leader.firstName}} {{leader.lastName}}</option>
 						</select>
 						<label>Co-Lead:</label> <select class="form-control" required
 						ng-model="challengeAreaModel.leader2" name="leader2" id="leader2">
@@ -38,8 +38,7 @@
 					<table id="testTable" class="table">
 						<thead>
 							<tr>
-								<th>S.No.</th>
-								<th>Name</th>
+								<th>Challenge Area</th>
 								<th>Co-Lead</th>
 								<th>Co-Lead</th>
 								<th ng-show="loggedInUser.role == 'Admin'">Action</th>
@@ -48,15 +47,14 @@
 						<tbody
 						ng-repeat="challengeArea in challengeAreaModel.challengeAreas">
 						<tr>
-							<td>{{$index+1}}.</td>
 							<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
 								<a href="" ng-click="viewChallengeArea(challengeArea)">{{challengeArea.name}}</a>
 							</td>
 							<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
-								{{challengeArea.leader1LastName}}, {{challengeArea.leader1FirstName}}
+								<a href="" ng-click="sendMail(challengeArea.leader1_id, 'Challenge Area', challengeArea.name)">{{challengeArea.leader1FirstName}} {{challengeArea.leader1LastName}}</a>
 							</td>
 							<td ng-show="!(challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id)">
-								{{challengeArea.leader2LastName}}, {{challengeArea.leader2FirstName}}
+								<a href="" ng-click="sendMail(challengeArea.leader2_id, 'Challenge Area', challengeArea.name)">{{challengeArea.leader2FirstName}} {{challengeArea.leader2LastName}}</a>
 							</td>
 							<td ng-show="challengeAreaModel.editMode && challengeAreaModel.selectedChallengeArea.id == challengeArea.id">
 								<input class="form-control" type="text" ng-model="challengeArea.name"/>
@@ -141,7 +139,7 @@
 				<div class="panel-heading">
 					<div ng-hide="challengeAreaModel.editStrategy && challengeAreaModel.strategy == strategy">
 						<h5 class="panel-title">Strategy#{{$index+1}}: {{strategy.name}}</h5>
-						{{strategy.description}}
+						<span class="subheading">{{strategy.description}}</span>
 						<div align="right"> <button  class="btn btn-primary" align="right" ng-show="isAdmin()" ng-click="editStrategy(strategy)">Edit</button>
 							<button  class="btn btn-primary" align="right"  ng-show="isAdmin()" ng-click="createAction(strategy)">Create New Action</button>
 						</div>
@@ -157,11 +155,11 @@
 					<thead>
 						<div ng-show="strategy.actions.length == 0" font-size="10%">No Actions for this Strategy</div>
 						<tr ng-show="strategy.actions.length > 0">
-							<th>S.No.</th>
-							<th width="30%">Action Description</th>
+							<th>No.</th>
+							<th width="40%">Action Description</th>
 							<th>Action Lead</th>
 							<th>Agency</th>
-							<th>Estimated Completion Date</th>
+							<th>Est. Completion</th>
 							<th>Action Status</th>
 							<th>Last Updated</th>
 						</tr>
@@ -169,9 +167,9 @@
 					<tbody
 					ng-repeat="action in strategy.actions">
 					<tr>
-						<td>{{$index +1}}.</td>
+						<td>{{$parent.$index +1 }}.{{$index +1}}</td>
 						<td><a href="" ng-click="viewAction(action, strategy)">{{action.description}}</a></td>
-						<td>{{action.leaderLastName}}, {{action.leaderFirstName}}</td>
+						<td><a href="" ng-click="sendMail(action.lead_id, 'Action', action.description)">{{action.leaderFirstName}} {{action.leaderLastName}}</td>
 						<td>{{action.agencyName}}</td>
 						<td>{{action.endDate}}</td>
 						<td>
@@ -249,7 +247,16 @@
 				<label>Status: </label>
 			</div>
 			<div class="col-md-10">
-				<span>{{challengeAreaModel.action.status}}</span>
+				<span ng-show="!hasPrivilegesForChangeStatus()">{{challengeAreaModel.action.status}}</span> 
+				<span><select ng-show="hasPrivilegesForChangeStatus()"
+					ng-model="challengeAreaModel.action.status">
+						<option>Not Started</option>
+						<option>Early Progress</option>
+						<option>Underway</option>
+						<option>Substantial Progress</option>
+						<option>Completed</option>
+				</select>
+				<button class="btn btn-primary" ng-show="hasPrivilegesForChangeStatus()" ng-click="saveStatus()">Save</button></span>
 			</div>
 		</div>
 		<div class="row">
@@ -292,40 +299,50 @@
 		<h4 class="page-header">Performance Measures and Comments</h4>
 		<ng-include src="'performanceMeasures.html'" ng-controller="MainCtrl"></ng-include>
 	</div>	
-	
+
 	<div>
-		<h4 class="page-header">Action Comments</h4>
-		<button  class="btn btn-primary" ng-click="createActionComment()">Add New Comment</button> 
+		<h4 class="page-header">Action Comments ({{challengeAreaModel.actionComments.length}})</h4>
+		<button title="Add New Comment" ng-show="hasPrivileges()" class="btn btn-info right-align" ng-click="createActionComment()">
+		<span class="glyphicon glyphicon-comment" aria-hidden="true" /></button>
 		<br/>
+
 		<div ng-show="challengeAreaModel.createActionComment">
-			<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionComment"/> 
-			<br/>
-			<button  class="btn btn-primary" ng-click="createComment()">Save Comment</button>
-			<button  class="btn btn-primary" ng-click="cancelCreateComment()">Cancel</button>
+			<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionComment"/>
+			<form action="uploadTest.php" method="post" enctype="multipart/form-data">
+			<input type='hidden' name='actionId' value='{{challengeAreaModel.action.id}}'/>
+            <input name="file" type="file" id="file" onchange="angular.element(this).scope().setFile(this)"/> 
+            <input name="btnUpload"  ng-click="createComment()" type="submit" value="Save Comment" class="btn btn-primary" />
+        </form> 
+        <button  class="btn btn-primary" ng-click="cancelCreateComment()">Cancel</button>
 		</div>
 		<br/>
 		<table id="actioncOMMENTTable" class="table table-bordered">	
 		<div ng-show="challengeAreaModel.actionComments.length == 0">No Comments for this Action</div>
 						<thead ng-hide="challengeAreaModel.actionComments.length == 0">
 							<tr>
-								<th>S.No.</th>
+								<th>Date</th>
 								<th>Author</th>
-								<th>Date </th>
-								<th>Comment</th>
-								<th>Document</th>
+								<th width=40%>Comment</th>
+								<th width=10%>Document</th>
 								<th ng-show="isAdmin()">Actions</th>
 							</tr>			
 						</thead>
 						<tbody ng-hide="challengeAreaModel.actionComments.length == 0"
 						ng-repeat="actionComment in challengeAreaModel.actionComments | orderBy:'-comment_date'">
 						<tr>
-							<td>{{$index +1}}.</td>
-							<td>{{actionComment.author}}</td>
 							<td>{{actionComment.comment_date}}</td>
+							<td>{{actionComment.author}}</td>
 							<td ng-hide="challengeAreaModel.editActionComment && challengeAreaModel.selectedActionComment == actionComment.id">{{actionComment.comment}}</td>
 							<td ng-show="challengeAreaModel.editActionComment && challengeAreaModel.selectedActionComment == actionComment.id">
 							<textarea class="form-control" ng-model="actionComment.comment"/></td>
-							<td></td>
+							<td>
+							<form ng-show="actionComment.fileName" action="uploadTest.php" method="post" enctype="multipart/form-data">
+
+                    			<input ng-hide="true" name="actionId" value="{{action.id}}"/>
+                    			<input ng-hide="true" name="fileName" value="{{actionComment.fileName}}"/>
+                    			<input name="btnDownload" type="submit" class="download" align="center" value="{{actionComment.fileName}}"/>
+                  			</form>		
+							</td>
 							<td ng-show="isAdmin()">
 							<button title = "Edit" type="button" class="btn btn-danger btn-sm" ng-click="deleteComment(actionComment)">
 								<span class="glyphicon glyphicon-remove" aria-hidden="true" />
@@ -334,6 +351,7 @@
 						</tr>
 						</tbody>
 						</table>
+
 		</div>
 	</div>
 <div ng-show="challengeAreaModel.createAction">
@@ -442,6 +460,7 @@
 					<label>Scope Reach:</label><input class="form-control" ng-model="challengeAreaModel.action.scopeReach" type="text"/>
 					<br/>
 					<button class="btn btn-primary" ng-click="editAndSaveAction()">Save</button>
+					<button class="btn btn-primary" ng-click="deleteAction()">Delete</button>
 					<button class="btn btn-primary" ng-click="cancelEditAction()">Cancel</button>
 				</div>
 			</form>

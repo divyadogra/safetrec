@@ -4,6 +4,17 @@ underscore.factory('_', ['$window', function($window) {
 }]);
 
 app = angular.module('shspApp', ['underscore']);
+// app.config(['$routeProvider',
+//   function($routeProvider) {
+//     $routeProvider.
+//       when('/', {
+//         templateUrl: '../template/login.php',
+//         controller: 'PhoneListCtrl'
+//       }).
+//       otherwise({
+//         redirectTo: '../template/loginsuccess.php'
+//       });
+//   }]);
 app.controller("MainCtrl",function($scope,$http, $window){
 
     var user = {};
@@ -264,15 +275,17 @@ app.controller("DivisionCtrl", function($scope, $http){
     init();
 })
 
-app.controller("ChallengeAreaCtrl", function($scope, $http, _){
+app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
     var challengeAreaModel = {};
     $scope.challengeAreaModel = challengeAreaModel;
 
     var init = function(){
         $scope.showSpecificChallengeArea = false;
+        $scope.showSpecificAction = false;
         challengeAreaModel.challengeAreaName = null;
         challengeAreaModel.editMode = false;
         challengeAreaModel.editStrategy = false;
+        challengeAreaModel.editAction = false;
         challengeAreaModel.create = false;
         challengeAreaModel.createActionComment = false;
         challengeAreaModel.createNewOutput = false;
@@ -384,8 +397,8 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
         $scope.showSpecificAction = true;
         $scope.challengeAreaModel.action = action;
         $scope.challengeAreaModel.selectedStrategy = strategy;
-        $scope.challengeAreaModel.action.startDate = action.startDate;
-        $scope.challengeAreaModel.action.endDate = action.endDate;
+        // $scope.challengeAreaModel.action.startDate = new Date(action.startDate);
+        // $scope.challengeAreaModel.action.endDate = new Date(action.endDate);
         $http.get("../php/actionOutput.php",{params: {actionId: challengeAreaModel.action.id}}).success(function(data) {
             challengeAreaModel.actionOutputs = data;
         }).error(function(data) {
@@ -413,7 +426,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
 
     $scope.saveStrategy = function() {
           $http.put("../php/strategy.php", {name: challengeAreaModel.strategy.name,
-                 description:challengeAreaModel.strategy.description, challengeId: challengeAreaModel.challengeArea.id}).success(function(data) {
+                 description:challengeAreaModel.strategy.description, id: challengeAreaModel.strategy.id}).success(function(data) {
           
             $scope.viewActions(challengeAreaModel.challengeArea.id); 
         }).error(function(data) {
@@ -426,6 +439,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
            challengeId: challengeAreaModel.challengeArea.id}).success(function(data) {
             $scope.viewActions(challengeAreaModel.challengeArea.id); 
             challengeAreaModel.createStrategy = false;
+            challengeAreaModel.newStrategy = "";
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })
@@ -437,6 +451,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
 
     $scope.cancelCreateStrategy = function() {
           challengeAreaModel.createStrategy = false;
+          challengeAreaModel.newStrategy = "";
     }
 
     $scope.createAction = function(strategy) {
@@ -485,6 +500,11 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
          challengeAreaModel.editAction = false;
     }
 
+    $scope.saveStatus = function() {
+        $scope.editAndSaveAction();
+        alert("Status changed");
+    }
+
     $scope.editAndSaveAction = function() {
 
         request = { id: challengeAreaModel.action.id,
@@ -512,15 +532,25 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
         })
     }
 
+    $scope.deleteAction= function() {
+        $http.delete("../php/action.php", {params: {id:challengeAreaModel.action.id}}).success(function(data) {
+            $scope.viewActions(challengeAreaModel.challengeArea.id);
+            challengeAreaModel.editAction = false;
+            $scope.showSpecificAction = false;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        });
+    }
+
     $scope.createActionComment = function() {
         challengeAreaModel.createActionComment = true;
-    }
+    };
 
 
      $scope.createComment = function() {
 
         $http.post("../php/actionComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
-           comment: challengeAreaModel.actionComment, actionId: challengeAreaModel.action.id}).success(function(data) {
+           comment: challengeAreaModel.actionComment, actionId: challengeAreaModel.action.id, fileName: challengeAreaModel.fileName}).success(function(data) {
             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
             challengeAreaModel.createActionComment = false;
         }).error(function(data) {
@@ -536,8 +566,8 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
         })
     }
 
-    $scope.cancelUpdateComment = function() {
-        challengeAreaModel.editActionComment = false;
+    $scope.cancelCreateComment = function() {
+        challengeAreaModel.createActionComment  = false;
     }
 
 
@@ -578,6 +608,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
             actionId: challengeAreaModel.action.id}).success(function(data){
             challengeAreaModel.createNewOutput = false;
                 $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+                challengeAreaModel.actionOutputDescription = "";
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })    
@@ -585,10 +616,12 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
 
     $scope.cancelCreateOutput = function() {
         challengeAreaModel.createNewOutput = false;
+        challengeAreaModel.actionOutputDescription = "";
     }
 
     $scope.cancelCreateOutcome = function() {
         challengeAreaModel.createNewOutcome = false;
+        challengeAreaModel.actionOutcomeDescription = "";
     }
 
 
@@ -598,6 +631,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
             actionId: challengeAreaModel.action.id}).success(function(data){
             challengeAreaModel.createNewOutcome = false;
             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+            challengeAreaModel.actionOutcomeDescription = "";
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })    
@@ -619,20 +653,23 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
         })
     }
 
-    $scope.createNewOutputComment = function() {
+    $scope.createNewOutputComment = function(id) {
         challengeAreaModel.createNewOutputComment = true;
+        challengeAreaModel.selectedOutput = id;
     }
 
-    $scope.createNewOutcomeComment = function() {
+    $scope.createNewOutcomeComment = function(id) {
         challengeAreaModel.createNewOutcomeComment = true;
+        challengeAreaModel.selectedOutcome = id;
     }
     $scope.createOutputComment = function(actionOutput) {
 
         $http.post("../php/actionOutputComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
-           comment: challengeAreaModel.actionOutputComment, actionOutputId: actionOutput.id}).success(function(data) {
+           comment: challengeAreaModel.actionOutputComment, actionOutputId: actionOutput.id, fileName: challengeAreaModel.fileName}).success(function(data) {
             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
             challengeAreaModel.createNewOutputComment = false;
             challengeAreaModel.actionOutputComment = "";
+            actionOutput.showComments = true;
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })
@@ -641,10 +678,11 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
     $scope.createOutcomeComment = function(actionOutcome) {
 
         $http.post("../php/actionOutcomeComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
-           comment: challengeAreaModel.actionOutcomeComment, actionOutcomeId: actionOutcome.id}).success(function(data) {
+           comment: challengeAreaModel.actionOutcomeComment, actionOutcomeId: actionOutcome.id, fileName: challengeAreaModel.fileName}).success(function(data) {
             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
             challengeAreaModel.createNewOutcomeComment = false;
             challengeAreaModel.actionOutcomeComment = "";
+            actionOutcome.showComments = true;
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })
@@ -674,6 +712,32 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _){
              challengeAreaModel.errorObj = data;
         })
     }
+
+    $scope.sendMail = function(userId, subjectArea, subjectName) {
+        $http.get("../php/user.php", {params: {id: userId}}).success(function(data) {
+            var link = "mailto:"+ data[0].email +"?subject=" + subjectArea + ":" + subjectName;
+            $window.location.href = link;
+        }).error(function(data) {
+            challengeAreaModel.errorObj = data;
+        });
+       
+    }
+
+    $scope.hasPrivileges = function() {
+        return $scope.isAdmin() || $scope.loggedInUser.id == challengeAreaModel.challengeArea.leader1_id 
+        || $scope.loggedInUser.id == challengeAreaModel.challengeArea.leader2_id || $scope.loggedInUser.id == challengeAreaModel.action.leadId;
+    }
+
+    $scope.hasPrivilegesForChangeStatus = function() {
+        return $scope.loggedInUser.id == challengeAreaModel.challengeArea.leader1_id 
+        || $scope.loggedInUser.id == challengeAreaModel.challengeArea.leader2_id || $scope.loggedInUser.id == challengeAreaModel.action.leadId;
+    }
+
+    $scope.setFile = function(element) {
+        $scope.$apply(function($scope) {
+            challengeAreaModel.fileName = element.files[0].name;
+        });
+    };
 
     init();
 })

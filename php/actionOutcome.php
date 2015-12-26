@@ -32,7 +32,7 @@ function viewActionOutcomes($actionId) {
             $results = executeQuery($query);
 
             for($i=0, $c = count($results); $i < $c; $i++) {
-              $query = "select id, author, comment_date, comment from action_outcome_comment where action_outcome_id =".$results[$i]['id'];; 
+              $query = "select id, author, comment_date, comment, file_name as fileName from action_outcome_comment where action_outcome_id =".$results[$i]['id'];; 
               $actionOutcomeCommentResults = executeQuery($query);        
               $results[$i]['comments'] = $actionOutcomeCommentResults;
             }

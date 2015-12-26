@@ -12,6 +12,7 @@
 <link href="../css/safetrec.css" rel="stylesheet">
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="../js/angular.js"></script>
+<script src="../js/angular-route.js"></script>
 <script src="../js/bootstrap.js"></script>	
 <script src="../js/underscore.js"></script>
 <script src="../js/shspapp.js"></script>
@@ -29,7 +30,7 @@
 			</a>
 		</li>
 		<li role="presentation">
-			<a href="#viewChallengeArea" class="navbar-text" aria-controls="viewChallengeArea" role="tab" data-toggle="tab"> CHALLENGE AREAS
+			<a href="#viewChallengeArea" class="navbar-text" aria-controls="viewChallengeArea" role="tab" data-toggle="tab" ng-click="init()"> CHALLENGE AREAS
 			</a>
 		</li>
 		<li role="presentation">

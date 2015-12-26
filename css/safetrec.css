@@ -54,6 +54,12 @@
   border-radius: 4px;
   }
 
+  .download {
+    color: #337ab7;
+    background-color: white;
+    border: 0px;
+  }
+
   .navbar-text {
     color: white;
     margin: 0 0 0 2;
@@ -73,12 +79,23 @@
     border-color: black;
   }
 
-  .glyphicon.glyphicon-expand {
-    font-size: 20px;
+  .glyphicon.glyphicon-chevron-right {
+    font-size: 15px;
   }
-  .glyphicon.glyphicon-collapse-down {
-    font-size: 20px;
+  .glyphicon.glyphicon-chevron-down {
+    font-size: 15px;
   }
   .glyphicon {
     pointer-events: all !important;
+  }
+
+  .subheading {
+    font-style:italic;
+    font-size:13;
+  }
+
+  .comments {
+    font-size:13;
+    font-family: "Times New Roman", Times, serif;
+
   }

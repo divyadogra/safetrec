@@ -47,8 +47,11 @@ function createActionOutcomeComment() {
             $author = $request->author;
             $comment = $request->comment;
             $actionOutcomeId = $request->actionOutcomeId;
+            $fileName = $request->fileName;
+
             
-            $query = sprintf("insert into action_outcome_comment (author, comment_date, comment, action_outcome_id) values ('%s', now(), '%s', %d)", $author, $comment, $actionOutcomeId);         
+            $query = sprintf("insert into action_outcome_comment (author, comment_date, comment, action_outcome_id, file_name) 
+              values ('%s', now(), '%s', %d, '%s')", $author, $comment, $actionOutcomeId, $fileName);         
             $results = executeQuery($query);
             $response = json_encode($results);
 

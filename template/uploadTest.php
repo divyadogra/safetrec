@@ -1,95 +1,37 @@
 <?php
 
- $token = "WgfElHJY6oCBHEPEuPo7qh33SizanSxL";
- $servername = "localhost";
-$username = "divya";
-$password = "password";
-$dbname = "practicedb";
-$refreshtoken1 = null;
-$accesstoken = null;
-// Create connection
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    // set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+include "../php/refreshToken.php";
+include "../php/dbConnect.php";
 
-    $stmt = $conn->prepare("SELECT REFRESH_TOKEN FROM refreshtoken");
-    $stmt->execute();
-
-    // set the resulting array to associative
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    $row = $stmt->fetch();
-    $refreshtoken1 = $row['REFRESH_TOKEN'];
-
-    $conn = null;
-
-} catch(PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-}
-
-$url = "https://app.box.com/api/oauth2/token";
-try {
-
-    $ch = curl_init();
-    curl_setopt($ch,CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POSTFIELDS,"grant_type=refresh_token&refresh_token=".$refreshtoken1."&client_id=ev2m34bide0g84u0ybcfan9mj36xe9uv&client_secret=vyzSxP1tWPhlA46lozwWqwso6RMstCja");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $myResponse = curl_exec($ch);
-    $json_a = json_decode($myResponse, true);
-    $accessToken = $json_a['access_token'];
-    $refreshtoken1 = $json_a['refresh_token'];
-    curl_close($ch);
-    
-} catch (Exception $e) {
-    $response = $e->getMessage();
-}
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    // set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    $stmt = $conn->prepare("UPDATE refreshtoken SET REFRESH_TOKEN='".$refreshtoken1."'");
-    $stmt->execute();
-
-    $conn = null;
-
-} catch(PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-}
-  // function refreshToken() {
-  //       $url = "https://app.box.com/api/oauth2/token";
-  //       try {
-
-  //           $ch = curl_init();
-
-  //           curl_setopt($ch,CURLOPT_URL, $url);
-  //           curl_setopt($ch, CURLOPT_POSTFIELDS, array(
-  //               'grant_type'=> 'refresh_token', 
-  //               'refresh_token'=>'KKd3dlzUSUaLq76lmfSTZRxs1zuaJiYWamceNI9GUoR5Bcjim8jOuqIHN6TWZAfw',
-  //               'client_id'=>'ev2m34bide0g84u0ybcfan9mj36xe9uv',
-  //               'client_secret'=>'vyzSxP1tWPhlA46lozwWqwso6RMstCja'
-  //           ));
-  //           // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  //           // curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-  //           $response = curl_exec($ch);
-  //           echo $response;
-  //           curl_close($ch);
-  //       } catch (Exception $e) {
-  //           $response = $e->getMessage();
-  //       }
-  //   }
+$accessToken = getAccessToken();
 
     
     if (isset($_POST['btnUpload'])) {
-        $url = "https://upload.box.com/api/2.0/files/content";
 
-        // refreshToken();
+        //Create folder structure
+       
+        $actionId = $_POST['actionId'];
+        $actionOutcomeId = $_POST['actionOutcomeId'];
+        $actionOutputId = $_POST['actionOutputId'];
+        $actionCommentId = $_POST['actionCommentId'];
+
+        if ($actionOutcomeId != null) {
+           $folderId = doFolderCreateTask("ActionOutcome", $actionOutcomeId, $accessToken, $actionId);
+        } else if ($actionOutputId != null) {
+            $folderId = doFolderCreateTask("ActionOuput", $actionOutputId, $accessToken, $actionId);
+        } else {
+             $folderId = doFolderCreateTask("Action", $actionId, $accessToken, $actionId);
+        }
+
+
+        //Upload files
+
+        $url = "https://upload.box.com/api/2.0/files/content";
         
         $file_upload = $_FILES['file']['tmp_name'];
         $json = json_encode(array(
                                 'name' => $_FILES['file']['name'], 
-                                'parent' => array('id' => 0)
+                                'parent' => array('id' => $folderId)
                             ));
         $fields = array(
                       'attributes' => $json,
@@ -109,7 +51,8 @@ try {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
             $response = curl_exec($ch);
             curl_close($ch);
-            header('Location: download.php');
+            echo $response;
+            header('Location: loginSuccess.php');
            
     
         } catch (Exception $e) {
@@ -117,10 +60,61 @@ try {
         }
         
     }
-       
 
-    if(isset($_POST['listFiles'])) {
-        $url = "https://api.box.com/2.0/folders/0";
+     function doFolderCreateTask($folder, $id, $accessToken, $actionId) {
+            $query = "select box_folder_id from box_folder_map where folder_name='".$folder."-".$id."'";
+            $response = executeQuery($query);
+
+            if (count($response) > 0) {
+                 $folderId = $response[0]['box_folder_id'];
+            } else if ($folder != "Action") {
+                $query = "select box_folder_id from box_folder_map where folder_name='Action-".$actionId."'";
+                $response = executeQuery($query);
+                if (count($response) > 0) {
+                    $parentFolderId = $response[0]['box_folder_id'];
+                } else {
+                    $parentFolderId = createFolder("Action-".$actionId, 0, $accessToken);
+                }
+                $folderId = createFolder($folder."-".$id, $parentFolderId, $accessToken);
+            }
+            return $folderId;
+        }
+
+
+    function createFolder($name, $parentFolderId, $accessToken) {
+         $fields = array(
+                      'name'=> $name,
+                      'parent' => array('id' => $parentFolderId)
+                  );
+
+         try {
+
+            $ch = curl_init();
+
+            curl_setopt($ch,CURLOPT_URL, "https://api.box.com/2.0/folders");
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization: Bearer '.$accessToken
+            ));
+             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+            $response = curl_exec($ch);
+            $folderInfo = json_decode($response, true);
+            $folderId = $folderInfo['id'];
+
+            // Insert into Db
+            $query = "insert into box_folder_map values('".$name."', '".$folderId."')"; 
+            executeQuery($query);
+            curl_close($ch);
+            return $folderId;
+    
+        } catch (Exception $e) {
+            $response = $e->getMessage();
+        }
+       }
+       
+    
+    function listFiles($folderId, $accessToken) {
+       $url = "https://api.box.com/2.0/folders/".$folderId."/items";
         try {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -128,20 +122,31 @@ try {
                 'Authorization: Bearer '.$accessToken 
                 
             ));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
+            return $response;
         }catch(Exception $e) {
             $response = $e->getMessage();
-        }
+        }   
     }
-
     
          
      if (isset($_POST['btnDownload'])) {
-        // refreshToken();
         try {
-            $fileId = $_POST['fileId'];
-
             $fileName = $_POST['fileName'];
+            $actionOutcomeId = $_POST['outcomeId'];
+            $actionOutputId = $_POST['outputId'];
+            $actionId = $_POST['actionId'];
+
+
+            if ($actionOutcomeId != null) {
+                $fileId = getFileInfo("ActionOutcome", $actionOutcomeId, $accessToken, $fileName);
+            } else if ($actionOutputId != null) {
+                $fileId = getFileInfo("ActionOutcome", $actionOutputId, $accessToken, $fileName);
+            } else {
+                $fileId = getFileInfo("Action", $actionId, $accessToken, $fileName);
+            }
+            
            
             $url = "https://api.box.com/2.0/files/".$fileId."/content";
             $ch = curl_init();
@@ -177,6 +182,25 @@ try {
         } catch (Exception $e) {
              $response = $e->getMessage();
         }
+
+
          print_r($response);
     }
+
+        function getFileInfo($folder, $id, $accessToken, $fileName) {
+                $query = "select box_folder_id from box_folder_map where folder_name='".$folder."-".$id."'";
+                $response = executeQuery($query);
+                $fileResults = json_decode(listFiles($response[0]['box_folder_id'], $accessToken));
+
+                $files = $fileResults->entries;
+
+
+                for($i = 0; $i < count($files); ++$i) {
+                    if ($files[$i]->name == $fileName) {
+                        $fileId = $files[$i]->id;
+                        break;
+                    }
+                }
+
+            }
 ?>

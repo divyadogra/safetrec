@@ -107,14 +107,16 @@
 						<tr>
 							<td><b>Name</td>
 							<td><b>Email</td>
+							<td><b>Agency</td>
 							<td><b>Action</td>
 						</tr>
 					</thead>
 					<tbody
-						ng-repeat="user in userModel.users">
+						ng-repeat="user in userModel.users| orderBy:'firstName'"">
 						<tr>
-							<td><a href="" ng-click="viewUser(user)">{{user.lastName}}, {{user.firstName}} </a></td>
+							<td><a href="" ng-click="viewUser(user)">{{user.firstName}} {{user.lastName}}</a></td>
 							<td>{{user.email}}</td>
+							<td>{{user.agency}}</td>
 							<td>
 								<button class="btn btn-sm btn-primary" ng-click="editUser(user)">
 									<span class="glyphicon glyphicon-pencil" aria-hidden="true" />

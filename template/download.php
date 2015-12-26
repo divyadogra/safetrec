@@ -39,11 +39,6 @@
           </table>
         </div>
 
-
-        <!-- <select name="listOfFiles" ng-model="selectedOption" ng-options="file.name for file in files track by file.id">
-      </select>
-      <button value="Download" ng-click="download()"></button> -->
-
       </div>
     </div>
     <div class="col-md-1"></div>
