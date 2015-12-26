@@ -550,7 +550,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
      $scope.createComment = function() {
 
         $http.post("../php/actionComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
-           comment: challengeAreaModel.actionComment, actionId: challengeAreaModel.action.id}).success(function(data) {
+           comment: challengeAreaModel.actionComment, actionId: challengeAreaModel.action.id, fileName: challengeAreaModel.fileName}).success(function(data) {
             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
             challengeAreaModel.createActionComment = false;
         }).error(function(data) {
@@ -566,8 +566,8 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         })
     }
 
-    $scope.cancelUpdateComment = function() {
-        challengeAreaModel.editActionComment = false;
+    $scope.cancelCreateComment = function() {
+        challengeAreaModel.createActionComment  = false;
     }
 
 
@@ -653,20 +653,23 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         })
     }
 
-    $scope.createNewOutputComment = function() {
+    $scope.createNewOutputComment = function(id) {
         challengeAreaModel.createNewOutputComment = true;
+        challengeAreaModel.selectedOutput = id;
     }
 
-    $scope.createNewOutcomeComment = function() {
+    $scope.createNewOutcomeComment = function(id) {
         challengeAreaModel.createNewOutcomeComment = true;
+        challengeAreaModel.selectedOutcome = id;
     }
     $scope.createOutputComment = function(actionOutput) {
 
         $http.post("../php/actionOutputComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
-           comment: challengeAreaModel.actionOutputComment, actionOutputId: actionOutput.id}).success(function(data) {
+           comment: challengeAreaModel.actionOutputComment, actionOutputId: actionOutput.id, fileName: challengeAreaModel.fileName}).success(function(data) {
             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
             challengeAreaModel.createNewOutputComment = false;
             challengeAreaModel.actionOutputComment = "";
+            actionOutput.showComments = true;
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })
@@ -675,10 +678,11 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
     $scope.createOutcomeComment = function(actionOutcome) {
 
         $http.post("../php/actionOutcomeComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
-           comment: challengeAreaModel.actionOutcomeComment, actionOutcomeId: actionOutcome.id}).success(function(data) {
+           comment: challengeAreaModel.actionOutcomeComment, actionOutcomeId: actionOutcome.id, fileName: challengeAreaModel.fileName}).success(function(data) {
             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
             challengeAreaModel.createNewOutcomeComment = false;
             challengeAreaModel.actionOutcomeComment = "";
+            actionOutcome.showComments = true;
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })
@@ -723,6 +727,17 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         return $scope.isAdmin() || $scope.loggedInUser.id == challengeAreaModel.challengeArea.leader1_id 
         || $scope.loggedInUser.id == challengeAreaModel.challengeArea.leader2_id || $scope.loggedInUser.id == challengeAreaModel.action.leadId;
     }
+
+    $scope.hasPrivilegesForChangeStatus = function() {
+        return $scope.loggedInUser.id == challengeAreaModel.challengeArea.leader1_id 
+        || $scope.loggedInUser.id == challengeAreaModel.challengeArea.leader2_id || $scope.loggedInUser.id == challengeAreaModel.action.leadId;
+    }
+
+    $scope.setFile = function(element) {
+        $scope.$apply(function($scope) {
+            challengeAreaModel.fileName = element.files[0].name;
+        });
+    };
 
     init();
 })

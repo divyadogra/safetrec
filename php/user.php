@@ -36,7 +36,8 @@ try {
 function viewUsers() {
       try{
 
-            $query = "select id, first_name as firstName, last_name as lastName, email from user";         
+            $query = "select user.id, first_name as firstName, last_name as lastName, email, agency.name as agency from user,
+             agency where user.agency_id = agency.id";         
             $results = executeQuery($query);
             $response = json_encode($results);
             echo $response;

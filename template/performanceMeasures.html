@@ -26,46 +26,58 @@
 				<div class="panel-heading">
 					<div class="row">
 						<div class="col-md-8">
-							{{index+1}} {{output.description}}
+							{{output.description}}
 						</div>
 						<div class="col-md-4">
 							<div class="btn-toolbar right-align">
-								<button title="Create Output Comment" class="btn btn-info" ng-show="hasPrivileges()" ng-click="createNewOutputComment()"><span class="glyphicon glyphicon-comment" aria-hidden="true" /></button>
+
+								<button title="Create Output Comment" class="btn btn-info" ng-show="hasPrivileges()" ng-click="createNewOutputComment(output.id)"><span class="glyphicon glyphicon-comment" aria-hidden="true" /></button>
 								<button title="Delete" class="btn btn-danger" ng-show="isAdmin()" ng-click="deleteOutput(output)"><span class="glyphicon glyphicon-remove" aria-hidden="true" /></button>
-						</div>
+							</div>
 						</div>
 					</div>
 				</div>
-	<div ng-show="challengeAreaModel.createNewOutputComment">
+	<div ng-show="challengeAreaModel.createNewOutputComment && challengeAreaModel.selectedOutput == output.id">
 		<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutputComment"/> 
-		<br/>
-		<button  class="btn btn-primary" ng-click="createOutputComment(output)">Save Comment</button>
-		<button  class="btn btn-primary" ng-click="cancelCreateOutputComment()">Cancel</button>
+		<form action="uploadTest.php" method="post" enctype="multipart/form-data">
+			<input type='hidden' name='actionId' value='{{challengeAreaModel.action.id}}' />
+			<input type='hidden' name='actionOutputId' value='{{output.id}}' />
+            <input name="file" type="file" id="file" onchange="angular.element(this).scope().setFile(this)"/> 
+            <input name="btnUpload"  ng-click="createOutputComment(output)" type="submit" value="Save Comment" class="btn btn-primary" />
+        </form>
+		<button  class="btn btn-primary" style="display:inline-block"   ng-click="cancelCreateOutputComment()">Cancel</button>
 	</div>
 	<br/>
 
-	<a href="" class="glyphicon glyphicon-expand" aria-hidden="true" ng-show="!output.showComments" ng-click="showOutputComments(output)"><font size="4">Comments</font></a>
-	<a href="" class="glyphicon glyphicon-collapse-down" aria-hidden="true" ng-show="output.showComments" ng-click="hideOutputComments(output)"><font size="4">Comments</font></a>
+	<a href="" class="glyphicon glyphicon-chevron-right" aria-hidden="true" ng-show="!output.showComments" ng-click="showOutputComments(output)"><span class="comments">Show Comments({{output.comments.length}})</span></a>
+	<a href="" class="glyphicon glyphicon-chevron-down" aria-hidden="true" ng-show="output.showComments" ng-click="hideOutputComments(output)"><span class="comments">Hide Comments({{output.comments.length}})</span></a>
 	<br/>
 	<br/>
 	<table offset="10" class="table table-bordered" ng-show="output.showComments">	
 		<div ng-show="output.showComments && output.comments.length == 0" font-size="10%">No Comments for this Output</div>
 		<thead ng-hide="output.comments.length == 0">
 						<tr>
-							<th>Author</th>
 							<th>Date </th>
-							<th>Comment</th>
-							<th>Document</th>
+							<th>Author</th>
+							<th width=50%>Comment</th>
+							<th width=10%>Document</th>
 							<th ng-show="isAdmin()">Actions</th>
 						</tr>			
 		</thead>
 		<tbody ng-hide="output.comments.length == 0"
 					ng-repeat="outputComment in output.comments | orderBy:'-comment_date'">
 					<tr>
-						<td>{{outputComment.author}}</td>
 						<td>{{outputComment.comment_date}}</td>
+						<td>{{outputComment.author}}</td>
 						<td>{{outputComment.comment}}</td>
-						<td></td>
+						<td>
+						<form ng-show="outputComment.fileName" action="uploadTest.php" method="post" enctype="multipart/form-data">
+
+                    			<input ng-hide="true" name="outputId" value="{{output.id}}"/>
+                    			<input ng-hide="true" name="fileName" value="{{outputComment.fileName}}"/>
+                    			<input name="btnDownload" type="submit" class="download" align="center" value="{{outputComment.fileName}}"/>
+                  			</form>	
+						</td>
 						<td ng-show="isAdmin()">
 						<button title = "Delete" type="button" class="btn btn-danger btn-sm" ng-click="deleteOutputComment(outputComment)">
 							<span class="glyphicon glyphicon-remove" aria-hidden="true" />
@@ -107,32 +119,35 @@
 						</div>
 						<div class="col-md-4">
 							<div class="btn-toolbar right-align">
-								<button title="Create Outcome Comment" class="btn btn-info" ng-show="isAdmin()" ng-click="createNewOutcomeComment()"><span class="glyphicon glyphicon-comment" aria-hidden="true" /></button>
-								<button title="Delete" class="btn btn-danger" ng-show="hasPrivileges()" ng-click="deleteOutcome(outcome)"><span class="glyphicon glyphicon-remove" aria-hidden="true" /></button>
-						</div>
+								<button title="Create Outcome Comment" class="btn btn-info" ng-show="hasPrivileges()" ng-click="createNewOutcomeComment(outcome.id)"><span class="glyphicon glyphicon-comment" aria-hidden="true" /></button>
+								<button title="Delete" class="btn btn-danger" ng-show="isAdmin()" ng-click="deleteOutcome(outcome)"><span class="glyphicon glyphicon-remove" aria-hidden="true" /></button>
+							</div>
 						</div>
 					</div>
 				</div>
-	<div ng-show="challengeAreaModel.createNewOutcomeComment">
+	<div ng-show="challengeAreaModel.createNewOutcomeComment && challengeAreaModel.selectedOutcome == outcome.id">
 		<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutcomeComment"/> 
-		<br/>
-		<button  class="btn btn-primary" ng-click="createOutcomeComment(outcome)">Save Comment</button>
-		<button  class="btn btn-primary" ng-click="cancelCreateOutcomeComment()">Cancel</button>
+		<form action="uploadTest.php" method="post" enctype="multipart/form-data">
+			<input type='hidden' name='actionId' value='{{challengeAreaModel.action.id}}' />
+			<input type='hidden' name='actionOutcomeId' value='{{outcome.id}}' />
+            <input name="file" type="file" id="file" onchange="angular.element(this).scope().setFile(this)"/> 
+            <input name="btnUpload"  ng-click="createOutcomeComment(outcome)" type="submit" value="Save Comment" class="btn btn-primary" />
+        </form>
+		<button  class="btn btn-primary" style="display:inline-block"   ng-click="cancelCreateOutcomeComment()">Cancel</button>
 	</div>
 	<br/>
 
-	<a href="" class="glyphicon glyphicon-expand" aria-hidden="true" ng-show="!outcome.showComments" ng-click="showOutcomeComments(outcome)"><font size="4">Comments</font></a>
-	<a href="" class="glyphicon glyphicon-collapse-down" aria-hidden="true" ng-show="outcome.showComments" ng-click="hideOutcomeComments(outcome)"><font size="4">Comments</font></a>
+	<a href="" class="glyphicon glyphicon-chevron-right" aria-hidden="true" ng-show="!outcome.showComments" ng-click="showOutcomeComments(outcome)"><span class="comments">Show Comments({{outcome.comments.length}})</span></a>
+	<a href="" class="glyphicon glyphicon-chevron-down" aria-hidden="true" ng-show="outcome.showComments" ng-click="hideOutcomeComments(outcome)"><span class="comments">Hide Comments({{outcome.comments.length}})</span></a>
 	<br/>
 	<br/>
 	<table class="table table-bordered" ng-show="outcome.showComments">	
 		<div ng-show="outcome.showComments && outcome.comments.length == 0" font-size="10%">No Comments for this Outcome</div>
 		<thead ng-hide="outcome.comments.length == 0">
 						<tr>
-							<th>S.No.</th>
-							<th>Author</th>
 							<th>Date </th>
-							<th>Comment</th>
+							<th>Author</th>
+							<th width=40%>Comment</th>
 							<th>Document</th>
 							<th ng-show="isAdmin()">Actions</th>
 						</tr>			
@@ -140,11 +155,17 @@
 		<tbody ng-hide="outcome.comments.length == 0"
 					ng-repeat="outcomeComment in outcome.comments | orderBy:'-comment_date'">
 					<tr>
-						<td>{{$index +1}}.</td>
-						<td>{{outcomeComment.author}}</td>
 						<td>{{outcomeComment.comment_date}}</td>
+						<td>{{outcomeComment.author}}</td>
 						<td>{{outcomeComment.comment}}</td>
-						<td></td>
+						<td >
+							<form ng-show="outcomeComment.fileName" action="uploadTest.php" method="post" enctype="multipart/form-data">
+
+                    			<input ng-hide="true" name="outcomeId" value="{{outcome.id}}"/>
+                    			<input ng-hide="true" name="fileName" value="{{outcomeComment.fileName}}"/>
+                    			<input name="btnDownload" type="submit" class="download" align="center" value="{{outcomeComment.fileName}}"/>
+                  			</form>
+						</td>
 						<td ng-show="isAdmin()">
 						<button title = "Delete" type="button" class="btn btn-danger btn-sm" ng-click="deleteOutcomeComment(outcomeComment)">
 							<span class="glyphicon glyphicon-remove" aria-hidden="true" />

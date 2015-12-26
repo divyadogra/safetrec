@@ -28,7 +28,7 @@ try {
 function viewActionComments($actionId) {
       try{
 
-            $query = "select id, author, comment_date, comment from action_comment where action_id =".$actionId;         
+            $query = "select id, author, comment_date, comment, file_name as fileName from action_comment where action_id =".$actionId;         
             $results = executeQuery($query);
 
             $response = json_encode($results);
@@ -47,8 +47,9 @@ function createActionComment() {
             $author = $request->author;
             $comment = $request->comment;
             $actionId = $request->actionId;
+            $fileName = $request->fileName;
             
-            $query = sprintf("insert into action_comment (author, comment_date, comment, action_id) values ('%s', now(), '%s', %d)", $author, $comment, $actionId);         
+            $query = sprintf("insert into action_comment (author, comment_date, comment, action_id, file_name) values ('%s', now(), '%s', %d, '%s')", $author, $comment, $actionId, $fileName);         
             $results = executeQuery($query);
             $response = json_encode($results);
 
