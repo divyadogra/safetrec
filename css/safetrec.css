@@ -97,5 +97,18 @@
   .comments {
     font-size:13;
     font-family: "Times New Roman", Times, serif;
+  }
 
+  .panel-heading {
+    background-color:#B6B1B1 !important;
+    border: 0px solid #B6B1B1   !important;
+  }
+
+  .panel-default {
+    border: 2px solid #B6B1B1   !important;
+  }
+
+  table, th, td {
+    border: 2px solid #B6B1B1   !important;
+    font-size: 14px;
   }

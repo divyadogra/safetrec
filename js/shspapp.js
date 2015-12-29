@@ -4,17 +4,24 @@ underscore.factory('_', ['$window', function($window) {
 }]);
 
 app = angular.module('shspApp', ['underscore']);
-// app.config(['$routeProvider',
-//   function($routeProvider) {
-//     $routeProvider.
-//       when('/', {
-//         templateUrl: '../template/login.php',
-//         controller: 'PhoneListCtrl'
-//       }).
-//       otherwise({
-//         redirectTo: '../template/loginsuccess.php'
-//       });
-//   }]);
+app.directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        // scope: false,
+        link: function(scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+            
+            element.bind('change', function(){
+                scope.$apply(function(){
+                    modelSetter(scope.$parent.$parent.$parent.$parent, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);
+
+
 app.controller("MainCtrl",function($scope,$http, $window){
 
     var user = {};
@@ -22,6 +29,22 @@ app.controller("MainCtrl",function($scope,$http, $window){
     $scope.model = model;
     $scope.user = user;
     $scope.userCreated = false;
+
+    $scope.uploadFile = function(){
+        var file = $scope.myFile;
+       var fd = new FormData();
+        fd.append('file', file);
+        $http.post("../php/upload.php", fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function(){
+            console.log("Success");
+        })
+        .error(function(){
+            console.log("Failure");
+        });
+    };
 	
     /*$scope.$watch('tempArr', function() {
       if ($scope.$$phase) { // most of the time it is "$digest"
@@ -303,7 +326,7 @@ app.controller("DivisionCtrl", function($scope, $http){
     init();
 })
 
-app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
+app.controller('ChallengeAreaCtrl', ['$scope', '$http', '_', '$window', '$rootScope', function($scope, $http, _, $window, $rootScope){
     var challengeAreaModel = {};
     $scope.challengeAreaModel = challengeAreaModel;
 
@@ -416,6 +439,11 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         $http.get("../php/action.php", {params: {challengeId: challengeAreaId}}).success(function(data) {
             challengeAreaModel.strategies = data.length != 0 ? data: undefined;   
             challengeAreaModel.challengeArea = _.findWhere(challengeAreaModel.challengeAreas, {id:challengeAreaId});
+            _.each(challengeAreaModel.strategies, function(strategy) {
+                _.map(strategy.actions, function(action) {
+                     return action.estimatedCompletion = (new Date(action.endDate)).toString('MMM yyyy');
+                });  
+            });
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
         })
@@ -425,8 +453,8 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         $scope.showSpecificAction = true;
         $scope.challengeAreaModel.action = action;
         $scope.challengeAreaModel.selectedStrategy = strategy;
-        // $scope.challengeAreaModel.action.startDate = new Date(action.startDate);
-        // $scope.challengeAreaModel.action.endDate = new Date(action.endDate);
+        $scope.challengeAreaModel.action.startDate = (new Date(action.startDate)).toString("MM/dd/yyyy");
+        $scope.challengeAreaModel.action.endDate = (new Date(action.endDate)).toString("MM/dd/yyyy");
         $http.get("../php/actionOutput.php",{params: {actionId: challengeAreaModel.action.id}}).success(function(data) {
             challengeAreaModel.actionOutputs = data;
         }).error(function(data) {
@@ -542,8 +570,8 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
                     leadId: challengeAreaModel.action.leadId,
                     agencyId: challengeAreaModel.action.agencyId,
                     divisionId: challengeAreaModel.action.divisionId,
-                    startDate: challengeAreaModel.action.startDate,
-                    endDate: challengeAreaModel.action.endDate,
+                    startDate: new Date(challengeAreaModel.action.startDate),
+                    endDate: new Date(challengeAreaModel.action.endDate),
                     timing: challengeAreaModel.action.timing,
                     dataInfoProbId: challengeAreaModel.action.dataInfoProbId,
                     provenCountermeasure: challengeAreaModel.action.provenCountermeasure,
@@ -553,7 +581,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
                     legislative: challengeAreaModel.action.legislative
                     }
          $http.put("../php/action.php", request).success(function(data) {
-            $scope.viewActions(challengeAreaModel.challengeArea.id); 
+            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
             challengeAreaModel.editAction = false;
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
@@ -574,12 +602,30 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         challengeAreaModel.createActionComment = true;
     };
 
+    $scope.saveComment = function() {
+        var file = $scope.commentFile;
 
-     $scope.createComment = function() {
+        if (file) {
+            var fd = new FormData();
+            fd.append('file', file);
+            fd.append('actionId', challengeAreaModel.action.id);
+            $http.post("../php/upload.php", fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }).success(function(data) {
+                createComment(data.entries[0].name, data.entries[0].id);
+            });
+        }else {
+            createComment();
+        }
+    }
+
+
+    var createComment = function(fileName, fileId) {
 
         $http.post("../php/actionComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
-           comment: challengeAreaModel.actionComment, actionId: challengeAreaModel.action.id, fileName: challengeAreaModel.fileName}).success(function(data) {
-            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+           comment: challengeAreaModel.actionComment, actionId: challengeAreaModel.action.id, fileName: fileName, fileId:fileId}).success(function(data) {
+            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
             challengeAreaModel.createActionComment = false;
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
@@ -588,7 +634,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
 
     $scope.deleteComment = function(actionComment) {
         $http.delete("../php/actionComment.php", {params: {id: actionComment.id}}).success(function(data) {
-             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
         }).error(function(data) {
              challengeAreaModel.errorObj = data;
         })
@@ -635,7 +681,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         $http.post("../php/actionOutput.php", {description: challengeAreaModel.actionOutputDescription, 
             actionId: challengeAreaModel.action.id}).success(function(data){
             challengeAreaModel.createNewOutput = false;
-                $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+                $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
                 challengeAreaModel.actionOutputDescription = "";
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
@@ -652,13 +698,11 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         challengeAreaModel.actionOutcomeDescription = "";
     }
 
-
-
     $scope.createOutcome = function(actionOutcome) {
         $http.post("../php/actionOutcome.php", {description: challengeAreaModel.actionOutcomeDescription, 
             actionId: challengeAreaModel.action.id}).success(function(data){
             challengeAreaModel.createNewOutcome = false;
-            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
             challengeAreaModel.actionOutcomeDescription = "";
         }).error(function(data) {
             challengeAreaModel.errorObj = data;
@@ -667,7 +711,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
 
     $scope.deleteOutput = function(actionOutput) {
         $http.delete("../php/actionOutput.php", {params: {id:actionOutput.id}}).success(function(data) {
-             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
         }).error(function(data) {
              challengeAreaModel.errorObj = data;
         })
@@ -675,7 +719,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
 
     $scope.deleteOutcome = function(actionOutcome) {
         $http.delete("../php/actionOutcome.php", {params: {id: actionOutcome.id}}).success(function(data) {
-             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
         }).error(function(data) {
              challengeAreaModel.errorObj = data;
         })
@@ -690,11 +734,11 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         challengeAreaModel.createNewOutcomeComment = true;
         challengeAreaModel.selectedOutcome = id;
     }
-    $scope.createOutputComment = function(actionOutput) {
-
+    
+    var createOutputComment = function(actionOutput, fileName, fileId) {
         $http.post("../php/actionOutputComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
-           comment: challengeAreaModel.actionOutputComment, actionOutputId: actionOutput.id, fileName: challengeAreaModel.fileName}).success(function(data) {
-            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+           comment: challengeAreaModel.actionOutputComment, actionOutputId: actionOutput.id, fileName: fileName, fileId: fileId}).success(function(data) {
+            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
             challengeAreaModel.createNewOutputComment = false;
             challengeAreaModel.actionOutputComment = "";
             actionOutput.showComments = true;
@@ -703,11 +747,48 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         })
     }
 
-    $scope.createOutcomeComment = function(actionOutcome) {
+    $scope.saveOutputComment = function(actionOutput) {
+        var file = $scope.commentFile;
 
+        if (file) {
+            var fd = new FormData();
+            fd.append('file', file);
+            fd.append('actionId', challengeAreaModel.action.id);
+            fd.append('actionOutputId', actionOutput.id);
+            $http.post("../php/upload.php", fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }).success(function(data) {
+                createOutputComment(actionOutput, data.entries[0].name, data.entries[0].id);
+            });
+        }else {
+            createOutputComment(actionOutput);
+        }
+    }
+
+    $scope.saveOutcomeComment = function(actionOutcome) {
+        var file = $scope.commentFile;
+        if (file) {
+            var fd = new FormData();
+            fd.append('file', file);
+            fd.append('actionId', challengeAreaModel.action.id);
+            fd.append('actionOutcomeId', actionOutcome.id);
+            $http.post("../php/upload.php", fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }).success(function(data) {
+                createOutcomeComment(actionOutcome, data.entries[0].name, data.entries[0].id);
+            });
+        }else {
+            createOutputComment(actionOutcome);
+        }
+
+    }
+
+    var createOutcomeComment = function(actionOutcome, fileName, fileId) {
         $http.post("../php/actionOutcomeComment.php", {author: $scope.loggedInUser.last_name + ', ' + $scope.loggedInUser.first_name,
-           comment: challengeAreaModel.actionOutcomeComment, actionOutcomeId: actionOutcome.id, fileName: challengeAreaModel.fileName}).success(function(data) {
-            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+           comment: challengeAreaModel.actionOutcomeComment, actionOutcomeId: actionOutcome.id, fileName: fileName, fileId: fileId}).success(function(data) {
+            $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
             challengeAreaModel.createNewOutcomeComment = false;
             challengeAreaModel.actionOutcomeComment = "";
             actionOutcome.showComments = true;
@@ -727,7 +808,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
     }
     $scope.deleteOutputComment = function(actionOutputComment) {
         $http.delete("../php/actionOutputComment.php", {params: {id: actionOutputComment.id}}).success(function(data) {
-             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
         }).error(function(data) {
              challengeAreaModel.errorObj = data;
         })
@@ -735,7 +816,7 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
 
     $scope.deleteOutcomeComment = function(actionOutcomeComment) {
         $http.delete("../php/actionOutcomeComment.php", {params: {id: actionOutcomeComment.id}}).success(function(data) {
-             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.strategy);
+             $scope.viewAction(challengeAreaModel.action, challengeAreaModel.selectedStrategy);
         }).error(function(data) {
              challengeAreaModel.errorObj = data;
         })
@@ -761,11 +842,5 @@ app.controller("ChallengeAreaCtrl", function($scope, $http, _, $window){
         || $scope.loggedInUser.id == challengeAreaModel.challengeArea.leader2_id || $scope.loggedInUser.id == challengeAreaModel.action.leadId;
     }
 
-    $scope.setFile = function(element) {
-        $scope.$apply(function($scope) {
-            challengeAreaModel.fileName = element.files[0].name;
-        });
-    };
-
     init();
-})
+}])

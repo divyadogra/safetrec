@@ -6,11 +6,8 @@
         <div class="panel panel-default">
           <div class="panel-heading">Upload Files</div>
           <div class="panel-body">
-            <form action="uploadTest.php" method="post" enctype="multipart/form-data">
-            <input name="file" type="file" id="file"/> </br>
-            <input name="btnUpload" type="submit" value="Upload" class="btn btn-primary" />
-            <!-- <button name="btnUpload" type="button" class="btn btn-primary">Upload</button> -->
-            </form>
+           <input type="file" file-model="myFile"/><br>
+            <button class="btn btn-primary" ng-click="uploadFile()">Upload</button>
           </div>
         </div>
         <div class="panel panel-default">

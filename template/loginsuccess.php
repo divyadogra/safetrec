@@ -13,9 +13,11 @@
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="../js/angular.js"></script>
 <script src="../js/angular-route.js"></script>
+<script src="../js/angular-file-upload.js"></script>
 <script src="../js/bootstrap.js"></script>	
 <script src="../js/underscore.js"></script>
 <script src="../js/shspapp.js"></script>
+<script src="http://www.datejs.com/build/date.js" type="text/javascript"></script>
 </head>
 <body >
 <div ng-controller="MainCtrl"> 

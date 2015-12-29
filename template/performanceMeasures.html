@@ -39,13 +39,9 @@
 				</div>
 	<div ng-show="challengeAreaModel.createNewOutputComment && challengeAreaModel.selectedOutput == output.id">
 		<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutputComment"/> 
-		<form action="uploadTest.php" method="post" enctype="multipart/form-data">
-			<input type='hidden' name='actionId' value='{{challengeAreaModel.action.id}}' />
-			<input type='hidden' name='actionOutputId' value='{{output.id}}' />
-            <input name="file" type="file" id="file" onchange="angular.element(this).scope().setFile(this)"/> 
-            <input name="btnUpload"  ng-click="createOutputComment(output)" type="submit" value="Save Comment" class="btn btn-primary" />
-        </form>
-		<button  class="btn btn-primary" style="display:inline-block"   ng-click="cancelCreateOutputComment()">Cancel</button>
+        <input type="file" file-model="commentFile"/><br>
+    	<span><button class="btn btn-primary" ng-click="saveOutputComment(output)">Save</button>
+		<button  class="btn btn-primary" ng-click="cancelCreateOutputComment()">Cancel</button></span>
 	</div>
 	<br/>
 
@@ -72,9 +68,8 @@
 						<td>{{outputComment.comment}}</td>
 						<td>
 						<form ng-show="outputComment.fileName" action="uploadTest.php" method="post" enctype="multipart/form-data">
-
-                    			<input ng-hide="true" name="outputId" value="{{output.id}}"/>
                     			<input ng-hide="true" name="fileName" value="{{outputComment.fileName}}"/>
+                    			<input ng-hide="true" name="fileId" value="{{outputComment.fileId}}"/>
                     			<input name="btnDownload" type="submit" class="download" align="center" value="{{outputComment.fileName}}"/>
                   			</form>	
 						</td>
@@ -127,13 +122,9 @@
 				</div>
 	<div ng-show="challengeAreaModel.createNewOutcomeComment && challengeAreaModel.selectedOutcome == outcome.id">
 		<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionOutcomeComment"/> 
-		<form action="uploadTest.php" method="post" enctype="multipart/form-data">
-			<input type='hidden' name='actionId' value='{{challengeAreaModel.action.id}}' />
-			<input type='hidden' name='actionOutcomeId' value='{{outcome.id}}' />
-            <input name="file" type="file" id="file" onchange="angular.element(this).scope().setFile(this)"/> 
-            <input name="btnUpload"  ng-click="createOutcomeComment(outcome)" type="submit" value="Save Comment" class="btn btn-primary" />
-        </form>
-		<button  class="btn btn-primary" style="display:inline-block"   ng-click="cancelCreateOutcomeComment()">Cancel</button>
+        <input type="file" file-model="commentFile"/>
+    	<span><button class="btn btn-primary" ng-click="saveOutcomeComment(outcome)">Save</button>
+		<button  class="btn btn-primary" ng-click="cancelCreateOutcomeComment()">Cancel</button></span>
 	</div>
 	<br/>
 
@@ -147,8 +138,8 @@
 						<tr>
 							<th>Date </th>
 							<th>Author</th>
-							<th width=40%>Comment</th>
-							<th>Document</th>
+							<th width=50%>Comment</th>
+							<th width=10%>Document</th>
 							<th ng-show="isAdmin()">Actions</th>
 						</tr>			
 		</thead>
@@ -160,9 +151,8 @@
 						<td>{{outcomeComment.comment}}</td>
 						<td >
 							<form ng-show="outcomeComment.fileName" action="uploadTest.php" method="post" enctype="multipart/form-data">
-
-                    			<input ng-hide="true" name="outcomeId" value="{{outcome.id}}"/>
                     			<input ng-hide="true" name="fileName" value="{{outcomeComment.fileName}}"/>
+                    			<input ng-hide="true" name="fileId" value="{{outcomeComment.fileId}}"/>
                     			<input name="btnDownload" type="submit" class="download" align="center" value="{{outcomeComment.fileName}}"/>
                   			</form>
 						</td>

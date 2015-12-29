@@ -33,8 +33,7 @@
 		<br/>
 		<label ng-hide="challengeAreaModel.challengeAreas">No Challenge Area Added yet</label>
 		<div id="dvData" class="table-responsive" ng-show="challengeAreaModel.challengeAreas">
-			<div class="panel panel-default">
-				<div class="panel-body">
+			
 					<table id="testTable" class="table">
 						<thead>
 							<tr>
@@ -90,8 +89,6 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>
-		</div>
 	</div>
 </div>
 <div ng-if="showSpecificChallengeArea && !showSpecificAction && !challengeAreaModel.createAction">
@@ -172,7 +169,7 @@
 
 						<td><a href="" ng-click="sendMail(action.lead_id, 'Action', action.description)">{{action.leaderFirstName}} {{action.leaderLastName}}</td>
 						<td>{{action.agencyName}}</td>
-						<td>{{action.endDate}}</td>
+						<td>{{action.estimatedCompletion}}</td>
 						<td>
 							<div class="progress" ng-show="action.status == 'Completed'">
 								<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:100%"> 	
@@ -298,62 +295,13 @@
 	
 	<div>
 		<h4 class="page-header">Performance Measures and Comments</h4>
-		<ng-include src="'performanceMeasures.html'" ng-controller="MainCtrl"></ng-include>
+		<ng-include src="'performanceMeasures.html'"></ng-include>
 	</div>	
 
 	<div>
 		<h4 class="page-header">Action Comments ({{challengeAreaModel.actionComments.length}})</h4>
-		<button title="Add New Comment" ng-show="hasPrivileges()" class="btn btn-info right-align" ng-click="createActionComment()">
-		<span class="glyphicon glyphicon-comment" aria-hidden="true" /></button>
-		<br/>
-
-		<div ng-show="challengeAreaModel.createActionComment">
-			<label>Comment</label><textarea rows="2"class="form-control" ng-model="challengeAreaModel.actionComment"/>
-			<form action="uploadTest.php" method="post" enctype="multipart/form-data">
-			<input type='hidden' name='actionId' value='{{challengeAreaModel.action.id}}'/>
-            <input name="file" type="file" id="file" onchange="angular.element(this).scope().setFile(this)"/> 
-            <input name="btnUpload"  ng-click="createComment()" type="submit" value="Save Comment" class="btn btn-primary" />
-        </form> 
-        <button  class="btn btn-primary" ng-click="cancelCreateComment()">Cancel</button>
-		</div>
-		<br/>
-		<table id="actioncOMMENTTable" class="table table-bordered">	
-		<div ng-show="challengeAreaModel.actionComments.length == 0">No Comments for this Action</div>
-						<thead ng-hide="challengeAreaModel.actionComments.length == 0">
-							<tr>
-								<th>Date</th>
-								<th>Author</th>
-								<th width=40%>Comment</th>
-								<th width=10%>Document</th>
-								<th ng-show="isAdmin()">Actions</th>
-							</tr>			
-						</thead>
-						<tbody ng-hide="challengeAreaModel.actionComments.length == 0"
-						ng-repeat="actionComment in challengeAreaModel.actionComments | orderBy:'-comment_date'">
-						<tr>
-							<td>{{actionComment.comment_date}}</td>
-							<td>{{actionComment.author}}</td>
-							<td ng-hide="challengeAreaModel.editActionComment && challengeAreaModel.selectedActionComment == actionComment.id">{{actionComment.comment}}</td>
-							<td ng-show="challengeAreaModel.editActionComment && challengeAreaModel.selectedActionComment == actionComment.id">
-							<textarea class="form-control" ng-model="actionComment.comment"/></td>
-							<td>
-							<form ng-show="actionComment.fileName" action="uploadTest.php" method="post" enctype="multipart/form-data">
-
-                    			<input ng-hide="true" name="actionId" value="{{action.id}}"/>
-                    			<input ng-hide="true" name="fileName" value="{{actionComment.fileName}}"/>
-                    			<input name="btnDownload" type="submit" class="download" align="center" value="{{actionComment.fileName}}"/>
-                  			</form>		
-							</td>
-							<td ng-show="isAdmin()">
-							<button title = "Edit" type="button" class="btn btn-danger btn-sm" ng-click="deleteComment(actionComment)">
-								<span class="glyphicon glyphicon-remove" aria-hidden="true" />
-							</button>
-						</td>
-						</tr>
-						</tbody>
-						</table>
-
-		</div>
+		<ng-include src="'actionComments.html'"></ng-include>
+	</div>
 	</div>
 <div ng-show="challengeAreaModel.createAction">
 	<br/>

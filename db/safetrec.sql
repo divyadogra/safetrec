@@ -116,6 +116,8 @@ CREATE TABLE safetrec.action_comment (
   comment_date DATETIME NOT NULL,
   comment VARCHAR(5000) NOT NULL,
   action_id INT NOT NULL,
+  file_name varchar(1000),
+  file_id varchar(200),
   PRIMARY KEY (id),
   INDEX FK_action_id_idx (action_id ASC),
   CONSTRAINT FK_action_id
@@ -143,6 +145,8 @@ CREATE TABLE safetrec.action_output_comment (
   comment_date DATETIME NOT NULL,
   comment VARCHAR(5000) NOT NULL,
   action_output_id INT NOT NULL,
+  file_name varchar(1000),
+  file_id varchar(200),
   PRIMARY KEY (id),
   INDEX FK_action_output_id_idx (action_output_id ASC),
   CONSTRAINT FK_action_output_id
@@ -156,6 +160,8 @@ CREATE TABLE safetrec.action_outcome (
   id INT NOT NULL AUTO_INCREMENT,
   description VARCHAR(1000) NOT NULL,
   action_id INT NOT NULL,
+  file_name varchar(1000),
+  file_id varchar(200),
   PRIMARY KEY (id),
   INDEX FK_action_id_3_idx (action_id ASC),
   CONSTRAINT FK_action_id_3
@@ -177,6 +183,8 @@ CREATE TABLE safetrec.action_outcome_comment (
     REFERENCES safetrec.action_outcome (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
+
+create tabe document_map(file_name varchar(100), map_id varchar(100));
 
 
 #insert agency data

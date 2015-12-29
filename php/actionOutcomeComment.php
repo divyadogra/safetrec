@@ -48,10 +48,11 @@ function createActionOutcomeComment() {
             $comment = $request->comment;
             $actionOutcomeId = $request->actionOutcomeId;
             $fileName = $request->fileName;
+            $fileId = $request->fileId;
 
             
-            $query = sprintf("insert into action_outcome_comment (author, comment_date, comment, action_outcome_id, file_name) 
-              values ('%s', now(), '%s', %d, '%s')", $author, $comment, $actionOutcomeId, $fileName);         
+            $query = sprintf("insert into action_outcome_comment (author, comment_date, comment, action_outcome_id, file_name, file_id) 
+              values ('%s', now(), '%s', %d, '%s', '%s')", $author, $comment, $actionOutcomeId, $fileName, $fileId);         
             $results = executeQuery($query);
             $response = json_encode($results);
 

@@ -94,9 +94,9 @@ function updateAction() {
             $agencyId = $request->agencyId;
             $divisionId = $request->divisionId;
             $startDate = $request->startDate; 
-            $startDate = substr($startDate, 0, 10); 
+            // $startDate = substr($startDate, 0, 10); 
             $endDate = $request->endDate;
-            $endDate = substr($endDate, 0, 10); 
+            // $endDate = substr($endDate, 0, 10); 
             $scopeReach = $request->scopeReach;
           
 
