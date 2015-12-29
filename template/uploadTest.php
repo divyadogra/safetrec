@@ -183,8 +183,21 @@ $accessToken = getAccessToken();
              $response = $e->getMessage();
         }
 
-
          print_r($response);
+    } if (isset($_POST['btnViewFolder'])) {
+        $folderId = $_POST['fileId'];
+        $url = "https://api.box.com/2.0/folders/".$folderId;
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization: Bearer '.$accessToken
+                ));
+            $response = json_encode(curl_exec($ch));
+            curl_close($ch);
+        }catch(Exception $e) {
+            $response = $e->getMessage();
+        }
     }
 
         function getFileInfo($folder, $id, $accessToken, $fileName) {

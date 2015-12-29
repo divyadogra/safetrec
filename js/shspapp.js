@@ -23,10 +23,38 @@ app.controller("MainCtrl",function($scope,$http, $window){
     $scope.user = user;
     $scope.userCreated = false;
 	
-    $scope.listDocuments = function() {
+    /*$scope.$watch('tempArr', function() {
+      if ($scope.$$phase) { // most of the time it is "$digest"
+                $scope.folderTrain = $scope.tempArr;
+            } else {
+                 $scope.$apply(function() {
+                    $scope.folderTrain = $scope.tempArr;
+                 });
+            }
+   })*/
+
+    $scope.listDocuments = function(fileId, fileName) {
         var myURL = '../php/list.php';
-        $http.get(myURL).success(function (results) {
-        $scope.files = results.item_collection.entries;
+        $http.get(myURL, {params: {fileId: fileId}}).success(function (results) {
+            $scope.files = results.item_collection.entries;
+            if ($scope.folderTrain == null) {
+                $scope.folderTrain=[];
+            }
+                
+            var obj = {"id" : fileId, "name" : fileName};
+            $scope.folderTrain.push(obj);
+            
+            
+        });
+    }
+
+    $scope.loadFolder = function(folder) {
+
+        var myURL = '../php/list.php';
+        $http.get(myURL, {params: {fileId: folder.id}}).success(function (results) {
+            $scope.files = results.item_collection.entries;
+            var index = $scope.folderTrain.indexOf(folder);
+            $scope.folderTrain = $scope.folderTrain.splice(0, index + 1);
         });
     }
 

@@ -34,7 +34,7 @@
 			</a>
 		</li>
 		<li role="presentation">
-			<a href="#documents" class="navbar-text" aria-controls="documents" role="tab" data-toggle="tab" ng-click="listDocuments()"> DOCUMENTS
+			<a href="#documents" class="navbar-text" aria-controls="documents" role="tab" data-toggle="tab" ng-click="listDocuments(0, 'root')"> DOCUMENTS
 			</a>
 		</li>
 		<li class="dropdown"  ng-show="loggedInUser.role == 'Admin'">
@@ -50,7 +50,7 @@
 		
 		<h5 class="right-align" >
        		Welcome, {{loggedInUser.first_name}} {{loggedInUser.last_name}}!
-			<a id="Logout" name="Logout" class="logout" ng-click="logout()">Logout</a>
+			<a id="Logout" name="Logout" class="logout" href ng-click="logout()">Logout</a>
 		</h5>
 		
 	</ul>

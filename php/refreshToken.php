@@ -2,8 +2,8 @@
 
 function getAccessToken() {
     $servername = "localhost";
-    $username = "divya";
-    $password = "password";
+    $username = "root";
+    $password = "root";
     $dbname = "safetrec";
     $refreshtoken1 = null;
     $accesstoken = null;
@@ -34,7 +34,7 @@ function getAccessToken() {
 
         $ch = curl_init();
         curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,"grant_type=refresh_token&refresh_token=".$refreshtoken1."&client_id=ev2m34bide0g84u0ybcfan9mj36xe9uv&client_secret=vyzSxP1tWPhlA46lozwWqwso6RMstCja");
+        curl_setopt($ch, CURLOPT_POSTFIELDS,"grant_type=refresh_token&refresh_token=".$refreshtoken1."&client_id=w4hcd168mi2g8la7zds7of3prvjt1dpa&client_secret=dlJ08XXC3YuiO3CJoTK33RxQhy3npOa5");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $myResponse = curl_exec($ch);
         $json_a = json_decode($myResponse, true);

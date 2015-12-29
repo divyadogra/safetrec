@@ -8,7 +8,7 @@ if (!isset($_SESSION['loggedInUser'])) {
 
 $accessToken = getAccessToken();
 
-$url = "https://api.box.com/2.0/folders/0";
+$url = "https://api.box.com/2.0/folders/".$_GET['fileId'];
 try {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
